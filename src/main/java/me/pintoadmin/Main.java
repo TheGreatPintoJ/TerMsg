@@ -1,17 +1,98 @@
 package me.pintoadmin;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import com.googlecode.lanterna.*;
+import com.googlecode.lanterna.graphics.*;
+import com.googlecode.lanterna.screen.*;
+import com.googlecode.lanterna.terminal.*;
+import me.pintoadmin.pages.*;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+import java.io.*;
+
+public class Main {
+    static char HORIZONTAL = '─';
+    static char VERTICAL = '│';
+    static char TOPLEFT = '┌';
+    static char TOPRIGHT = '┐';
+    static char BOTTOMLEFT = '└';
+    static char BOTTOMRIGHT = '┘';
+
+    /*             ╭──────────────────────╮
+    MESSAGEBUBBLE <╡ TEXT HERE            │
+                   ╰──────────────────────╯
+     */
+
+    public static void main(String[] args) {
+        try {
+            Terminal terminal = new DefaultTerminalFactory().createTerminal();
+            Screen screen = new TerminalScreen(terminal);
+            screen.startScreen();
+
+            TextGraphics g = screen.newTextGraphics();
+            TextColor color = new TextColor.RGB(0, 200, 0);
+            g.setForegroundColor(color);
+
+            screen.setCursorPosition(null);
+
+            //new Base(g);
+
+            //screen.refresh();
+            //Thread.sleep(2000);
+            new Chat(g);
+            screen.refresh();
+
+//            screen.stopScreen();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void drawBox(int startX, int startY, int endX, int endY, TextGraphics g){
+        g.drawLine(startX+1, startY, endX-1, startY, HORIZONTAL); // Top
+        g.drawLine(startX+1, endY, endX-1, endY, HORIZONTAL); // Bottom
+        g.drawLine(startX, startY+1, startX, endY-1, VERTICAL); // Left
+        g.drawLine(endX, startY+1, endX, endY-1, VERTICAL); // Right
+
+        setChar(startX, startY, TOPLEFT, g); // Top Left Corner
+        setChar(endX, startY, TOPRIGHT, g); // Top Right Corner
+        setChar(startX, endY, BOTTOMLEFT, g); // Bottom Left Corner
+        setChar(endX, endY, BOTTOMRIGHT, g); // Bottom Right Corner
+    }
+
+    public static void drawText(int x, int y, String text, TextGraphics g){
+        x = x-(text.length()/2);
+        for(char c : text.toCharArray()){
+            g.setCharacter(x++, y, c);
+        }
+    }
+    public static void drawTextLeft(int x, int y, String text, TextGraphics g){
+        for(char c : text.toCharArray()){
+            g.setCharacter(x++, y, c);
+        }
+    }
+
+    private static void setChar(int x, int y, char c, TextGraphics g){
+        TextCharacter charred = g.getCharacter(x, y);
+        if(charred == null) {
+            g.setCharacter(x,y,c);
+            return;
+        }
+
+        char existingChar = charred.getCharacter();
+
+        if(existingChar == HORIZONTAL) {
+            if (c == TOPLEFT || c == TOPRIGHT) {
+                g.setCharacter(x, y, '┬');
+            } else if (c == BOTTOMLEFT || c == BOTTOMRIGHT) {
+                g.setCharacter(x, y, '┴');
+            }
+        } else if(existingChar == VERTICAL){
+            if (c == TOPLEFT || c == BOTTOMLEFT) {
+                g.setCharacter(x, y, '├');
+            } else if (c == TOPRIGHT || c == BOTTOMRIGHT) {
+                g.setCharacter(x, y, '┤');
+            }
+        } else {
+            g.setCharacter(x,y,c);
         }
     }
 }
