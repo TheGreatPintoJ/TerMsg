@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="TerMsg-DEV">
+    <output-path>$PROJECT_DIR$/out/artifacts/TerMsg_DEV</output-path>
+    <root id="archive" name="TerMsg-DEV.jar" />
+  </artifact>
+</component>
