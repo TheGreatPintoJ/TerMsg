@@ -1,9 +1,13 @@
 package me.pintoadmin;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 public class JsonParser {
@@ -28,7 +32,7 @@ public class JsonParser {
         }
     }
 
-    public List<String> getLines(String ip){
+    public JSONArray getMsgs(String ip) throws IOException {
         Main.OSTYPES os = Main.getOS();
         String dataDir =
                 switch (os){
@@ -38,12 +42,9 @@ public class JsonParser {
                 };
         File chatFile = new File(dataDir+ip);
 
-        try {
-            List<String> lines = Files.readAllLines(chatFile.toPath()).reversed();
-            lines.removeIf(String::isEmpty);
-            return lines;
-        } catch (IOException e){
-            return List.of("ERROR: "+e.getMessage());
-        }
+        String content = new String(Files.readAllBytes(chatFile.toPath()));
+        JSONObject root = new JSONObject(content);
+        JSONArray messages = root.getJSONArray("messages");
+        return messages;
     }
 }

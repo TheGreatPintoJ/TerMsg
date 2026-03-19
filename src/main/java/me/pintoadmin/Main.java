@@ -21,7 +21,6 @@ public class Main {
         MAC,
         LINUX
     };
-    private static OSTYPES osType;
 
     /*             ╭──────────────────────╮
     MESSAGEBUBBLE <╡ TEXT HERE            │
@@ -43,7 +42,7 @@ public class Main {
             //new Base(g);
             //Thread.sleep(2000);
             //screen.refresh();
-            new Chat(g);
+            new Chat(screen, g);
             screen.refresh();
             Thread.sleep(5000);
 //            screen.stopScreen();
@@ -65,12 +64,18 @@ public class Main {
     }
 
     public static void drawText(int x, int y, String text, TextGraphics g){
-        x = x-(text.length()/2);
+        x -= (text.length()/2);
         for(char c : text.toCharArray()){
             g.setCharacter(x++, y, c);
         }
     }
     public static void drawTextLeft(int x, int y, String text, TextGraphics g){
+        for(char c : text.toCharArray()){
+            g.setCharacter(x++, y, c);
+        }
+    }
+    public static void drawTextRight(int x, int y, String text, TextGraphics g){
+        x -= text.length();
         for(char c : text.toCharArray()){
             g.setCharacter(x++, y, c);
         }
@@ -112,7 +117,6 @@ public class Main {
             type = OSTYPES.MAC;
         }
 
-        osType = type;
         return type;
     }
 }
