@@ -16,6 +16,13 @@ public class Main {
     public static char BOTTOMLEFT = '└';
     public static char BOTTOMRIGHT = '┘';
 
+    public enum OSTYPES {
+        WINDOWS,
+        MAC,
+        LINUX
+    };
+    private static OSTYPES osType;
+
     /*             ╭──────────────────────╮
     MESSAGEBUBBLE <╡ TEXT HERE            │
                    ╰──────────────────────╯
@@ -38,7 +45,7 @@ public class Main {
             //screen.refresh();
             new Chat(g);
             screen.refresh();
-            Thread.sleep(10000);
+            Thread.sleep(5000);
 //            screen.stopScreen();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
@@ -69,7 +76,7 @@ public class Main {
         }
     }
 
-    private static void setChar(int x, int y, char c, TextGraphics g){
+    private static  void setChar(int x, int y, char c, TextGraphics g){
         TextCharacter charred = g.getCharacter(x, y);
         if(charred == null) {
             g.setCharacter(x,y,c);
@@ -93,5 +100,19 @@ public class Main {
         } else {
             g.setCharacter(x,y,c);
         }
+    }
+
+    public static OSTYPES getOS(){
+        String os = System.getProperty("os.name").toLowerCase();
+        OSTYPES type = OSTYPES.LINUX;
+
+        if (os.contains("win")) {
+            type = OSTYPES.WINDOWS;
+        } else if (os.contains("mac")) {
+            type = OSTYPES.MAC;
+        }
+
+        osType = type;
+        return type;
     }
 }

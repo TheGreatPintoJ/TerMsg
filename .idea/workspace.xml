@@ -9,8 +9,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ac22ef90-7ef0-4fb9-ac1b-4280adfc7298" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+    <list default="true" id="ac22ef90-7ef0-4fb9-ac1b-4280adfc7298" name="Changes" comment="Sidebar base">
+      <change afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/JsonParser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/pintoadmin/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/Chat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/Chat.java" afterDir="false" />
@@ -76,6 +76,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -102,24 +107,26 @@
     <option name="showLibraryContents" value="true" />
     <option name="showScratchesAndConsoles" value="false" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.TerMsg [build].executor&quot;: &quot;Run&quot;,
-    &quot;JAR Application.Build &amp; Run.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/Justin K/IdeaProjects/TerMsg/src/main/java/me/pintoadmin/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.41149426&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.Download Sources.executor": "Run",
+    "Gradle.TerMsg [build].executor": "Run",
+    "JAR Application.Build & Run.executor": "Debug",
+    "JAR Application.Run.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "dev",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/home/justin/IdeaProjects/TerMsg/build/libs/TerMsg-DEV.jar",
+    "onboarding.tips.debug.path": "C:/Users/Justin K/IdeaProjects/TerMsg/src/main/java/me/pintoadmin/Main.java",
+    "project.structure.last.edited": "Artifacts",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.41149426"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="me.pintoadmin.pages" />
@@ -164,9 +171,16 @@
         <option name="RunConfigurationTask" enabled="true" run_configuration_name="TerMsg [build]" run_configuration_type="GradleRunConfiguration" />
       </method>
     </configuration>
+    <configuration name="Run" type="JarApplication">
+      <option name="JAR_PATH" value="$PROJECT_DIR$/build/libs/TerMsg-DEV.jar" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Gradle.TerMsg [build]" />
       <item itemvalue="JAR Application.Build &amp; Run" />
+      <item itemvalue="JAR Application.Run" />
     </list>
   </component>
   <component name="SharedIndexes">
@@ -184,7 +198,20 @@
       <option name="presentableId" value="Default" />
       <updated>1773862674295</updated>
     </task>
+    <task id="LOCAL-00001" summary="Sidebar base">
+      <option name="closed" value="true" />
+      <created>1773882769212</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1773882769213</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Sidebar base" />
+    <option name="LAST_COMMIT_MESSAGE" value="Sidebar base" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
