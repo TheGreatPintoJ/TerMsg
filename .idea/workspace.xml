@@ -9,11 +9,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ac22ef90-7ef0-4fb9-ac1b-4280adfc7298" name="Changes" comment="Simple message loading">
+    <list default="true" id="ac22ef90-7ef0-4fb9-ac1b-4280adfc7298" name="Changes" comment="Message wrapping progress">
+      <change afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/Settings.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/pintoadmin/JsonParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/JsonParser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/pintoadmin/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/Base.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/Base.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/Chat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/Chat.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -111,8 +111,8 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Gradle.Download Sources.executor": "Run",
-    "Gradle.TerMsg [build].executor": "Debug",
-    "JAR Application.Build & Run.executor": "Debug",
+    "Gradle.TerMsg [build].executor": "Run",
+    "JAR Application.Build & Run.executor": "Run",
     "JAR Application.Run.executor": "Debug",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -138,7 +138,7 @@
       <command value="gradle build" />
     </option>
   </component>
-  <component name="RunManager" selected="JAR Application.Run">
+  <component name="RunManager" selected="Gradle.TerMsg [build]">
     <configuration name="TerMsg [build]" type="GradleRunConfiguration" factoryName="Gradle" activateToolWindowBeforeRun="false" show_console_on_std_err="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -215,24 +215,22 @@
       <option name="project" value="LOCAL" />
       <updated>1773886095696</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Message wrapping progress">
+      <option name="closed" value="true" />
+      <created>1773931836824</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1773931836825</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Sidebar base" />
     <MESSAGE value="Simple message loading" />
-    <option name="LAST_COMMIT_MESSAGE" value="Simple message loading" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/Chat.java</url>
-          <line>84</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="Message wrapping progress" />
+    <option name="LAST_COMMIT_MESSAGE" value="Message wrapping progress" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

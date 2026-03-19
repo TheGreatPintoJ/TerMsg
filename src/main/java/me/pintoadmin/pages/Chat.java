@@ -62,48 +62,35 @@ public class Chat {
                 g.setForegroundColor(color);
             }
 
-            String bottomBubbleLine = "╰";
-            for (int j = 0; j < message.length(); j++)
-                bottomBubbleLine += "─";
-            bottomBubbleLine += "╯";
-
             if(received) {
-                Main.drawTextLeft(leftMsgX + 1, yLevel - 1, getTopBubble(message.length()), g);
-                Main.drawTextLeft(leftMsgX, yLevel, "<╡" + message + "│", g);
-                Main.drawTextLeft(leftMsgX + 1, yLevel + 1, bottomBubbleLine, g);
-            } else {
-                int messageX = rightMsgX - 3 - message.length();
-                int leftXCutoff = WIDTH/3+1;
-//                if(messageX <= WIDTH/3+1){
-//                    messageX = WIDTH/3+2;
-//                    message = message.substring(0, WIDTH-(WIDTH/3+2));
-//                }
+                List<String> messageLines = getLines(WIDTH, message);
+                int longest = getLongest(messageLines);
 
-                List<String> messageLines = new ArrayList<>();
-                List<String> messageWords = List.of(message.split(" "));
-
-                String currentLine = "";
-                for(String word : messageWords){
-                    if(word.length() + currentLine.length() <= leftXCutoff)
-                        currentLine += word+" ";
-                    else {
-                        messageLines.add(currentLine);
-                        currentLine = word+" ";
-                    }
-                }
-                if(messageLines.isEmpty()) messageLines.add(currentLine);
-
-                Main.drawTextLeft(messageX, yLevel - messageLines.size(), getTopBubble(message.length()), g);
-                int index = messageLines.size();
+                Main.drawTextLeft(leftMsgX + 1, yLevel - messageLines.size(), getTopBubble(longest), g);
+                int index = messageLines.size()-1;
                 for(String line : messageLines) {
-                    if(messageLines.indexOf(line) == messageLines.size()-1)
-                        Main.drawTextRight(rightMsgX, yLevel+index, "│" + line + "╞>", g);
-                    else Main.drawTextRight(rightMsgX, yLevel, "│" + line + "│", g);
+                    int endSpace = longest-line.length();
+                    if(line.equals(messageLines.getLast()))
+                        Main.drawTextLeft(leftMsgX, yLevel, "<╡" + line +whitespace(endSpace)+"│", g);
+                    else Main.drawTextLeft(leftMsgX+1, yLevel-index, "│" + line +whitespace(endSpace)+"│", g);
                     index--;
                 }
-                Main.drawTextLeft(messageX, yLevel + 1, bottomBubbleLine, g);
-            }
+                Main.drawTextLeft(leftMsgX + 1, yLevel + 1, getBottomBubble(longest), g);
+            } else {
+                List<String> messageLines = getLines(WIDTH, message);
+                int longest = getLongest(messageLines);
 
+                Main.drawTextRight(rightMsgX - 1, yLevel - messageLines.size(), getTopBubble(longest), g);
+                int index = messageLines.size()-1;
+                for(String line : messageLines) {
+                    int endSpace = longest-line.length();
+                    if(line.equals(messageLines.getLast()))
+                        Main.drawTextRight(rightMsgX, yLevel, "│" + line +whitespace(endSpace)+"╞>", g);
+                    else Main.drawTextRight(rightMsgX+1, yLevel-index, "│" + line +whitespace(endSpace)+"│", g);
+                    index--;
+                }
+                Main.drawTextRight(rightMsgX - 1, yLevel + 1, getBottomBubble(longest), g);
+            }
 
             if(!read){
                 TextColor color = new TextColor.RGB(0, 200, 0);
@@ -111,7 +98,45 @@ public class Chat {
             }
             yLevel -= 3;
             if (yLevel <= maxHeight) break;
+            screen.refresh();
         }
+    }
+
+    private static List<String> getLines(int WIDTH, String message) {
+        int leftXCutoff = WIDTH /3+1;
+
+        List<String> messageLines = new ArrayList<>();
+        List<String> messageWords = List.of(message.split(" "));
+
+        String currentLine = "";
+        for(String word : messageWords){
+            if(word.length() + currentLine.length() <= leftXCutoff && !word.contains("\n"))
+                currentLine += word+" ";
+            else {
+                messageLines.add(currentLine);
+                currentLine = word+" ";
+            }
+        }
+        if(!messageLines.contains(currentLine)) messageLines.add(currentLine);
+        return messageLines;
+    }
+
+    private int getLongest(List<String> input){
+        int longest = 0;
+        for(String str : input){
+            if(longest < str.length()){
+                longest = str.length();
+            }
+        }
+        return longest;
+    }
+
+    private String whitespace(int amnt){
+        String str = "";
+        for(int i = 0; i < amnt; i++){
+            str += " ";
+        }
+        return str;
     }
 
     private String getTopBubble(int width){
@@ -119,6 +144,13 @@ public class Chat {
         for (int j = 0; j < width; j++)
             topBubbleLine += "─";
         topBubbleLine += "╮";
+        return topBubbleLine;
+    }
+    private String getBottomBubble(int width){
+        String topBubbleLine = "╰";
+        for (int j = 0; j < width; j++)
+            topBubbleLine += "─";
+        topBubbleLine += "╯";
         return topBubbleLine;
     }
 }

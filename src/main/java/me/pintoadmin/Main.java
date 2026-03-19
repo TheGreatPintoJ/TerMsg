@@ -2,13 +2,21 @@ package me.pintoadmin;
 
 import com.googlecode.lanterna.*;
 import com.googlecode.lanterna.graphics.*;
+import com.googlecode.lanterna.input.KeyStroke;
+import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.*;
 import com.googlecode.lanterna.terminal.*;
 import me.pintoadmin.pages.*;
+import org.w3c.dom.Text;
 
 import java.io.*;
+import java.util.Set;
 
 public class Main {
+    public static TextColor BLACK = new TextColor.RGB(0, 0, 0);
+    public static TextColor TRUE_BLACK = new TextColor.RGB(0, 0, 0);
+    public static TextColor GREEN = new TextColor.RGB(0, 200, 0);
+
     public static char HORIZONTAL = '─';
     public static char VERTICAL = '│';
     public static char TOPLEFT = '┌';
@@ -34,21 +42,23 @@ public class Main {
             screen.startScreen();
 
             TextGraphics g = screen.newTextGraphics();
-            TextColor color = new TextColor.RGB(0, 200, 0);
-            g.setForegroundColor(color);
+            BLACK = g.getBackgroundColor();
+            g.setForegroundColor(GREEN);
 
             screen.setCursorPosition(null);
 
-            //new Base(g);
-            //Thread.sleep(2000);
-            //screen.refresh();
             new Chat(screen, g);
-            screen.refresh();
-            Thread.sleep(5000);
-//            screen.stopScreen();
+            while(true) {
+                KeyStroke key = screen.readInput();
+                if(key.getKeyType() == KeyType.Escape){
+                    new Settings(terminal, screen, g);
+                    main(new String[0]);
+                }
+                Thread.sleep(100);
+            }
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
-        }
+        } catch (RuntimeException ignored){}
     }
 
     public static void drawBox(int startX, int startY, int endX, int endY, TextGraphics g){
