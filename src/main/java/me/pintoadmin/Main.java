@@ -9,12 +9,12 @@ import me.pintoadmin.pages.*;
 import java.io.*;
 
 public class Main {
-    static char HORIZONTAL = '─';
-    static char VERTICAL = '│';
-    static char TOPLEFT = '┌';
-    static char TOPRIGHT = '┐';
-    static char BOTTOMLEFT = '└';
-    static char BOTTOMRIGHT = '┘';
+    public static char HORIZONTAL = '─';
+    public static char VERTICAL = '│';
+    public static char TOPLEFT = '┌';
+    public static char TOPRIGHT = '┐';
+    public static char BOTTOMLEFT = '└';
+    public static char BOTTOMRIGHT = '┘';
 
     /*             ╭──────────────────────╮
     MESSAGEBUBBLE <╡ TEXT HERE            │
@@ -34,14 +34,13 @@ public class Main {
             screen.setCursorPosition(null);
 
             //new Base(g);
-
-            //screen.refresh();
             //Thread.sleep(2000);
+            //screen.refresh();
             new Chat(g);
             screen.refresh();
-
+            Thread.sleep(10000);
 //            screen.stopScreen();
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }

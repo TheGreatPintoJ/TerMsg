@@ -13,7 +13,7 @@ public class Chat {
         createPage();
     }
 
-    private List<String> contacts = List.of("Person 1", "Person 2");
+    private List<String> contacts = List.of("Person 1", "Person 2", "Person 3");
 
     private void createPage(){
         g.fill(' '); // Reset Screen
@@ -21,17 +21,17 @@ public class Chat {
         int WIDTH = g.getSize().getColumns();
         int HEIGHT = g.getSize().getRows();
 
-
         Main.drawBox(0,0, WIDTH/3, HEIGHT-1, g);
-        Main.drawBox(WIDTH/3+1, 0, WIDTH-1, HEIGHT-1, g);
+        Main.drawBox(WIDTH/3+1, 2, WIDTH-1, HEIGHT-1, g);
 
-        int idx = 1;
+        Main.drawText(WIDTH/6, 1,  "CONTACTS", g);
+        g.drawLine(1, 2, WIDTH/3-1, 2, Main.HORIZONTAL);
+
+        int idx = 2;
         for(String entry : contacts){
-            Main.drawTextLeft(3, idx*3, entry, g);
-            g.drawLine(1, idx*3+2, WIDTH/3-1, idx*3+2, '-');
+            Main.drawTextLeft(3, idx*2-1, entry, g);
+            g.drawLine(1, idx*2, WIDTH/3-1, idx*2, Main.HORIZONTAL);
             idx++;
         }
-
-//        Main.drawText((WIDTH/2)-1, (HEIGHT/2)-1, "Chat", g);
     }
 }
