@@ -10,6 +10,7 @@ import me.pintoadmin.pages.*;
 import org.w3c.dom.Text;
 
 import java.io.*;
+import java.nio.file.NoSuchFileException;
 import java.util.Set;
 
 public class Main {
@@ -47,12 +48,11 @@ public class Main {
 
             screen.setCursorPosition(null);
 
-            new Chat(screen, g);
+            new Chat(terminal, screen, g);
             while(true) {
                 KeyStroke key = screen.readInput();
                 if(key.getKeyType() == KeyType.Escape){
-                    new Settings(terminal, screen, g);
-                    main(new String[0]);
+
                 }
                 Thread.sleep(100);
             }

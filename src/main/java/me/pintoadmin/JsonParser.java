@@ -4,14 +4,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 public class JsonParser {
-
     public String getMsg(String ip, int idx) {
         Main.OSTYPES os = Main.getOS();
         String dataDir =
@@ -33,18 +31,22 @@ public class JsonParser {
     }
 
     public JSONArray getMsgs(String ip) throws IOException {
-        Main.OSTYPES os = Main.getOS();
-        String dataDir =
-                switch (os){
-                    case LINUX -> System.getenv("HOME")+"/.local/share/termsg/";
-                    case WINDOWS -> System.getenv("LOCALAPPDATA");
-                    case MAC -> System.getProperty("user.home") + "/Library/Application Support/";
-                };
-        File chatFile = new File(dataDir+ip);
+        try {
+            Main.OSTYPES os = Main.getOS();
+            String dataDir =
+                    switch (os) {
+                        case LINUX -> System.getenv("HOME") + "/.local/share/termsg/";
+                        case WINDOWS -> System.getenv("LOCALAPPDATA");
+                        case MAC -> System.getProperty("user.home") + "/Library/Application Support/";
+                    };
+            File chatFile = new File(dataDir + ip);
 
-        String content = new String(Files.readAllBytes(chatFile.toPath()));
-        JSONObject root = new JSONObject(content);
-        JSONArray messages = root.getJSONArray("messages");
-        return messages;
+            String content = new String(Files.readAllBytes(chatFile.toPath()));
+            JSONObject root = new JSONObject(content);
+            JSONArray messages = root.getJSONArray("messages");
+            return messages;
+        } catch (FileNotFoundException e){
+            return new JSONArray();
+        }
     }
 }
