@@ -1,5 +1,6 @@
 package me.pintoadmin.pages;
 
+import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.*;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -10,31 +11,35 @@ import me.pintoadmin.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
-
-import static me.pintoadmin.Main.main;
 
 public class Chat {
     private final Terminal terminal;
     private final Screen screen;
     private final TextGraphics g;
+    private final int WIDTH;
+    private final int HEIGHT;
     public Chat(Terminal terminal, Screen screen, TextGraphics g) throws IOException {
         this.terminal = terminal;
         this.screen = screen;
         this.g = g;
+        WIDTH = g.getSize().getColumns();
+        HEIGHT = g.getSize().getRows();
         createPage();
     }
 
-    private List<String> contacts = new ArrayList<>();
+    private final List<String> contacts = new ArrayList<>();
 
     private int selectedContact = 0;
+    private boolean boxSelected = false;
+
+    private int[] writingCursor = new int[2];
+    private String typingMsg = "";
 
     private void createPage() throws IOException {
         g.fill(' '); // Reset Screen
-
-        int WIDTH = g.getSize().getColumns();
-        int HEIGHT = g.getSize().getRows();
 
         g.setForegroundColor(Main.GREEN);
         g.setBackgroundColor(Main.BLACK);
@@ -44,7 +49,17 @@ public class Chat {
         Main.drawText(WIDTH/6, 1,  "CONTACTS", g);
         g.drawLine(1, 2, WIDTH/3-1, 2, Main.HORIZONTAL);
 
-        
+        g.drawLine(WIDTH/3+2, HEIGHT-3, WIDTH-2, HEIGHT-3, '=');
+
+        contacts.clear(); // Clear contacts
+        File[] files = new File(Main.getDataDir()).listFiles();
+        if(files != null) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    contacts.add(file.getName());
+                }
+            }
+        }
 
         int idx = 2;
         for(String entry : contacts){
@@ -63,11 +78,18 @@ public class Chat {
             idx++;
         }
 
+        updateMessages();
+        screen.refresh();
+        handleInput();
+    }
+    private void updateMessages() throws IOException {
         JsonParser parser = new JsonParser();
         int leftMsgX = WIDTH/3+2;
         int rightMsgX = WIDTH-2;
-        int yLevel = HEIGHT-3;
+        int yLevel = HEIGHT-5;
         int maxHeight = 3;
+        writingCursor[0] = WIDTH/3+3;
+        writingCursor[1] = HEIGHT-2;
 
         if(selectedContact != -1){
             JSONArray messages = parser.getMsgs(contacts.get(selectedContact));
@@ -120,8 +142,6 @@ public class Chat {
                 screen.refresh();
             }
         }
-        screen.refresh();
-        handleInput();
     }
 
     private void handleInput() throws IOException {
@@ -129,31 +149,64 @@ public class Chat {
         while(true) {
             KeyStroke key = screen.pollInput();
             if(key == null) continue;
-            switch (key.getKeyType()) {
-                case KeyType.ArrowDown:
-                    if(selectedContact < contacts.size()-1) selectedContact++;
-                    createPage();
-                    break mainLoop;
-                case KeyType.ArrowUp:
-                    if(selectedContact > 0) selectedContact--;
-                    createPage();
-                    break mainLoop;
-                case KeyType.Character:
-                    if(key.getCharacter() == 'q') {
-                        screen.close();
-                        throw new RuntimeException("quit");
-                    }
-                case KeyType.Escape:
+            if(boxSelected){
+                if(key.getKeyType() == KeyType.Character) {
+                    g.setCharacter(writingCursor[0], writingCursor[1], key.getCharacter());
+                    writingCursor[0]++;
+                    setMsgBoxCursor();
+                    screen.refresh();
+                    typingMsg += key.getCharacter();
+                } else if(key.getKeyType() == KeyType.Backspace){
+                    g.setCharacter(writingCursor[0]-1, writingCursor[1], ' ');
+                    writingCursor[0]--;
+                    setMsgBoxCursor();
+                    screen.refresh();
+                    typingMsg = typingMsg.substring(0, typingMsg.length()-1);
+                } else if(key.getKeyType() == KeyType.ArrowLeft){
+                    boxSelected = false;
+                    screen.setCursorPosition(null);
+                    screen.refresh();
+                } else if(key.getKeyType() == KeyType.Escape){
                     new Settings(terminal, screen, g);
                     createPage();
-                default:
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
+                }
+            } else {
+                switch (key.getKeyType()) {
+                    case KeyType.ArrowDown:
+                        if (selectedContact < contacts.size() - 1) selectedContact++;
+                        createPage();
                         break mainLoop;
-                    }
+                    case KeyType.ArrowUp:
+                        if (selectedContact > 0) selectedContact--;
+                        createPage();
+                        break mainLoop;
+                    case KeyType.ArrowRight:
+                        boxSelected = true;
+                        setMsgBoxCursor();
+                        screen.refresh();
+                        break;
+                    case KeyType.Character:
+                        if (key.getCharacter() == 'q') {
+                            screen.close();
+                            throw new RuntimeException("quit");
+                        }
+                        break;
+                    case KeyType.Escape:
+                        new Settings(terminal, screen, g);
+                        createPage();
+                        break mainLoop;
+                    default:
+                        break;
+                }
             }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ignored) {}
         }
+    }
+
+    private void setMsgBoxCursor(){
+        screen.setCursorPosition(new TerminalPosition(writingCursor[0], writingCursor[1]));
     }
 
     private static List<String> getLines(int WIDTH, String message) {

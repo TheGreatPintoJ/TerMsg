@@ -49,14 +49,7 @@ public class Main {
             screen.setCursorPosition(null);
 
             new Chat(terminal, screen, g);
-            while(true) {
-                KeyStroke key = screen.readInput();
-                if(key.getKeyType() == KeyType.Escape){
-
-                }
-                Thread.sleep(100);
-            }
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (RuntimeException ignored){}
     }
@@ -128,5 +121,13 @@ public class Main {
         }
 
         return type;
+    }
+    public static String getDataDir(){
+        return switch (getOS()) {
+                    case LINUX -> System.getenv("HOME") + "/.local/share/termsg/";
+                    case WINDOWS -> System.getenv("LOCALAPPDATA");
+                    case MAC -> System.getProperty("user.home") + "/Library/Application Support/";
+                };
+
     }
 }
