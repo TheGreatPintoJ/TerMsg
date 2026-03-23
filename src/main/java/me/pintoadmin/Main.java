@@ -91,7 +91,7 @@ public class Main {
             return;
         }
 
-        char existingChar = charred.getCharacter();
+        char existingChar = charred.getCharacterString().charAt(0);
 
         if(existingChar == HORIZONTAL) {
             if (c == TOPLEFT || c == TOPRIGHT) {

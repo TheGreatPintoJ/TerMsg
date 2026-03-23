@@ -1,5 +1,6 @@
 package me.pintoadmin.pages;
 
+import com.googlecode.lanterna.TerminalPosition;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
@@ -24,9 +25,12 @@ public class Settings {
 
     private List<String> menuEntries = List.of("Color", "Quit");
     private int selectedEntry = 0;
+    private TerminalPosition oldPos;
 
     private void createPage() throws IOException {
         screen.clear();
+        oldPos = screen.getCursorPosition();
+        screen.setCursorPosition(null);
 
         int WIDTH = g.getSize().getColumns();
         int HEIGHT = g.getSize().getRows();
@@ -102,5 +106,6 @@ public class Settings {
                     }
             }
         }
+        screen.setCursorPosition(oldPos);
     }
 }
