@@ -72,7 +72,7 @@ public class Chat {
         if(files != null) {
             for (File file : files) {
                 if (file.isFile()) {
-                    contacts.add(file.getName());
+                    contacts.add(MessageManager.getInstance().getName(file.getName()));
                 }
             }
         }
