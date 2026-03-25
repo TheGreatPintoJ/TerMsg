@@ -37,7 +37,11 @@ public class Main {
      */
 
     public static void main(String[] args) {
+        File dataDir = new File(getDataDir());
         try {
+            if(!dataDir.mkdir() && !dataDir.isDirectory())
+                throw new RuntimeException("Could not create data directory");
+
             Terminal terminal = new DefaultTerminalFactory().createTerminal();
             Screen screen = new TerminalScreen(terminal);
             screen.startScreen();
@@ -125,7 +129,7 @@ public class Main {
     public static String getDataDir(){
         return switch (getOS()) {
                     case LINUX -> System.getenv("HOME") + "/.local/share/termsg/";
-                    case WINDOWS -> System.getenv("LOCALAPPDATA");
+                    case WINDOWS -> System.getenv("LOCALAPPDATA")+"/termsg";
                     case MAC -> System.getProperty("user.home") + "/Library/Application Support/";
                 };
 

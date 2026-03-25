@@ -1,7 +1,6 @@
 package me.pintoadmin.pages;
 
-import com.googlecode.lanterna.TerminalPosition;
-import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.*;
 import com.googlecode.lanterna.graphics.*;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
@@ -33,7 +32,12 @@ public class Chat {
     private final List<String> contacts = new ArrayList<>();
 
     private int selectedContact = -1;
-    private boolean boxSelected = false;
+    private enum cursorSel {
+            MSGBOX,
+            CONTACT,
+            NEWMSG
+    }
+    private cursorSel selected = cursorSel.CONTACT;
 
     private int[] writingCursor = new int[2];
     private String typingMsg = "";
@@ -50,6 +54,16 @@ public class Chat {
         g.drawLine(1, 2, WIDTH/3-1, 2, Main.HORIZONTAL);
 
         g.drawLine(WIDTH/3+2, HEIGHT-3, WIDTH-2, HEIGHT-3, '=');
+
+        if(selected == cursorSel.NEWMSG){
+            g.setForegroundColor(Main.BLACK);
+            g.setBackgroundColor(Main.GREEN);
+        }
+        g.putString(WIDTH/3-2, 1, "＋", SGR.BOLD);
+        if(selected == cursorSel.NEWMSG){
+            g.setForegroundColor(Main.GREEN);
+            g.setBackgroundColor(Main.BLACK);
+        }
 
         contacts.clear(); // Clear contacts
         File[] files = new File(Main.getDataDir()).listFiles();
@@ -150,14 +164,14 @@ public class Chat {
         while(true) {
             KeyStroke key = screen.pollInput();
             if(key == null) continue;
-            if(boxSelected){
-                if(key.getKeyType() == KeyType.Character) {
+            if(selected == cursorSel.MSGBOX) {
+                if (key.getKeyType() == KeyType.Character) {
                     g.setCharacter(writingCursor[0], writingCursor[1], key.getCharacter());
                     writingCursor[0]++;
                     setMsgBoxCursor();
                     screen.refresh();
                     typingMsg += key.getCharacter();
-                } else if(key.getKeyType() == KeyType.Backspace) {
+                } else if (key.getKeyType() == KeyType.Backspace) {
                     g.setCharacter(writingCursor[0] - 1, writingCursor[1], ' ');
                     if (!typingMsg.isEmpty()) {
                         writingCursor[0]--;
@@ -165,22 +179,32 @@ public class Chat {
                         typingMsg = typingMsg.substring(0, typingMsg.length() - 1);
                     }
                     screen.refresh();
-                } else if(key.getKeyType() == KeyType.Enter){
+                } else if (key.getKeyType() == KeyType.Enter) {
                     MessageManager.getInstance().sendMessage(typingMsg, contacts.get(selectedContact));
                     typingMsg = "";
                     writingCursor = new int[]{WIDTH / 3 + 3, HEIGHT - 2};
                     setMsgBoxCursor();
                     createPage();
                     break;
-                } else if(key.getKeyType() == KeyType.Tab){
-                    boxSelected = false;
+                } else if (key.getKeyType() == KeyType.Tab) {
+                    selected = cursorSel.CONTACT;
                     screen.setCursorPosition(null);
                     screen.refresh();
-                } else if(key.getKeyType() == KeyType.Escape){
+                } else if (key.getKeyType() == KeyType.Escape) {
                     new Settings(terminal, screen, g);
                     createPage();
                 }
-            } else {
+            } else if(selected == cursorSel.NEWMSG){
+                if(key.getKeyType() == KeyType.ArrowDown){
+                    selected = cursorSel.CONTACT;
+                    createPage();
+                    break;
+                } else if(key.getKeyType() == KeyType.Enter){
+                    new NewChat(terminal, screen, g);
+                    createPage();
+                    break;
+                }
+            } else if(selected == cursorSel.CONTACT){
                 switch (key.getKeyType()) {
                     case KeyType.ArrowDown:
                         if (selectedContact < contacts.size() - 1) selectedContact++;
@@ -188,10 +212,11 @@ public class Chat {
                         break mainLoop;
                     case KeyType.ArrowUp:
                         if (selectedContact > 0) selectedContact--;
+                        else selected = cursorSel.NEWMSG;
                         createPage();
                         break mainLoop;
                     case KeyType.ArrowRight, KeyType.Tab:
-                        boxSelected = true;
+                        selected = cursorSel.MSGBOX;
                         setMsgBoxCursor();
                         updateMessages();
                         break;
