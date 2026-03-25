@@ -43,10 +43,12 @@ public class Chat {
     private String typingMsg = "";
 
     private void createPage() throws IOException {
-        g.fill(' '); // Reset Screen
+        screen.clear();
 
         g.setForegroundColor(Main.GREEN);
         g.setBackgroundColor(Main.BLACK);
+        g.fill(' '); // Reset Screen
+
         Main.drawBox(0,0, WIDTH/3, HEIGHT-1, g);
         Main.drawBox(WIDTH/3+1, 2, WIDTH-1, HEIGHT-1, g);
 
@@ -164,6 +166,10 @@ public class Chat {
         while(true) {
             KeyStroke key = screen.pollInput();
             if(key == null) continue;
+            if (key.getKeyType() == KeyType.Escape) {
+                new Settings(terminal, screen, g);
+                createPage();
+            }
             if(selected == cursorSel.MSGBOX) {
                 if (key.getKeyType() == KeyType.Character) {
                     g.setCharacter(writingCursor[0], writingCursor[1], key.getCharacter());
@@ -190,9 +196,6 @@ public class Chat {
                     selected = cursorSel.CONTACT;
                     screen.setCursorPosition(null);
                     screen.refresh();
-                } else if (key.getKeyType() == KeyType.Escape) {
-                    new Settings(terminal, screen, g);
-                    createPage();
                 }
             } else if(selected == cursorSel.NEWMSG){
                 if(key.getKeyType() == KeyType.ArrowDown){
@@ -226,10 +229,6 @@ public class Chat {
                             throw new RuntimeException("quit");
                         }
                         break;
-                    case KeyType.Escape:
-                        new Settings(terminal, screen, g);
-                        createPage();
-                        break mainLoop;
                     default:
                         break;
                 }

@@ -48,11 +48,35 @@ public class MessageManager {
 
         JSONObject mainObj = new JSONObject();
         mainObj.put("name", getName(host));
+        mainObj.put("port", getPort(host));
         mainObj.put("messages", arr);
 
         // 2. Write the JSON string to a file
         try (FileWriter file = new FileWriter(chatFile)) {
             file.write(mainObj.toString(4)); //pretty-printing (indentation)
+            file.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void newChat(String host, String port, String name) {
+        String dataDir = Main.getDataDir();
+        File chatFile = new File(dataDir + host);
+
+        if(chatFile.exists()) return;
+
+        // TODO: make sure host is valid and ping
+
+        // 1. Create the JSON object
+        JSONObject obj = new JSONObject();
+        obj.put("name", name);
+        obj.put("port", port);
+        obj.put("messages", List.of());
+
+        // 2. Write the JSON string to a file
+        try (FileWriter file = new FileWriter(chatFile)) {
+            file.write(obj.toString(4)); //pretty-printing (indentation)
             file.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -102,6 +126,18 @@ public class MessageManager {
             String content = new String(Files.readAllBytes(chatFile.toPath()));
             JSONObject root = new JSONObject(content);
             return root.getString("name");
+        } catch (FileNotFoundException e){
+            return host;
+        }
+    }
+    public String getPort(String host) throws IOException{
+        try {
+            String dataDir = Main.getDataDir();
+            File chatFile = new File(dataDir + host);
+
+            String content = new String(Files.readAllBytes(chatFile.toPath()));
+            JSONObject root = new JSONObject(content);
+            return root.getString("port");
         } catch (FileNotFoundException e){
             return host;
         }

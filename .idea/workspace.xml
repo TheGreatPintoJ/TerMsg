@@ -10,11 +10,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ac22ef90-7ef0-4fb9-ac1b-4280adfc7298" name="Changes" comment="Interactions and msgbox input">
-      <change afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/NewChat.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/material_theme_project_new.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/pintoadmin/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/pintoadmin/MessageManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/MessageManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/Chat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/Chat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/NewChat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/NewChat.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,6 +25,14 @@
       <entry key="_/home/justin/IdeaProjects/TerMsg" value="3B8VhkA8xsH0p2EacV1bkSfyNrr" />
       <entry key="_C:/Users/Justin K/IdeaProjects/TerMsg" value="3B8FDq4dit6DZZ98BOGLFwdaGPI" />
     </persistenceIdMap>
+  </component>
+  <component name="CopilotUserSelectedModel">
+    <selectedModels>
+      <entry key="chat-panel" value="GPT-5 mini" />
+      <entry key="agent-panel" value="GPT-5 mini" />
+      <entry key="inline" value="GPT-5 mini" />
+      <entry key="edit-panel" value="GPT-5 mini" />
+    </selectedModels>
   </component>
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
@@ -140,7 +147,7 @@
       <command value="gradle clean build" />
     </option>
   </component>
-  <component name="RunManager" selected="JAR Application.Build &amp; Run">
+  <component name="RunManager" selected="Gradle.TerMsg [build]">
     <configuration name="TerMsg [build]" type="GradleRunConfiguration" factoryName="Gradle" activateToolWindowBeforeRun="false" show_console_on_std_err="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -159,8 +166,11 @@
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
       <DebugAllEnabled>false</DebugAllEnabled>
       <RunAsTest>false</RunAsTest>
+      <GradleProfilingDisabled>false</GradleProfilingDisabled>
+      <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
     <configuration name="TerMsg [clean build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -182,8 +192,11 @@
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
       <DebugAllEnabled>false</DebugAllEnabled>
       <RunAsTest>false</RunAsTest>
+      <GradleProfilingDisabled>false</GradleProfilingDisabled>
+      <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
     <configuration name="Build &amp; Run" type="JarApplication">
