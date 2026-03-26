@@ -15,13 +15,11 @@ import java.io.IOException;
 import java.util.*;
 
 public class Chat {
-    private final Terminal terminal;
     private final Screen screen;
     private final TextGraphics g;
     private final int WIDTH;
     private final int HEIGHT;
-    public Chat(Terminal terminal, Screen screen, TextGraphics g) throws IOException {
-        this.terminal = terminal;
+    public Chat(Screen screen, TextGraphics g) throws IOException {
         this.screen = screen;
         this.g = g;
         WIDTH = g.getSize().getColumns();
@@ -266,9 +264,6 @@ public class Chat {
                         break;
                 }
             }
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException ignored) {}
         }
     }
 

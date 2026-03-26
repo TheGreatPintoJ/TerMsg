@@ -47,7 +47,7 @@ public class Main {
 
             screen.setCursorPosition(null);
 
-            new Chat(terminal, screen, g);
+            new Chat(screen, g);
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (RuntimeException ignored){}

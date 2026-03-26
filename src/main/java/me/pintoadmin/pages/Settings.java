@@ -94,12 +94,6 @@ public class Settings {
                     }
                 case KeyType.Escape:
                     break mainLoop;
-                default:
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        break mainLoop;
-                    }
             }
         }
         screen.setCursorPosition(oldPos);
