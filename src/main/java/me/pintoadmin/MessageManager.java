@@ -79,6 +79,25 @@ public class MessageManager {
         }
 
     }
+    public void editChat(String oldHost, String host, String port, String name) {
+        String dataDir = Main.getDataDir();
+        File chatFile = new File(dataDir + host);
+        File oldFile = new File(dataDir + oldHost);
+
+        // TODO: make sure host is valid and ping
+        JSONObject obj = new JSONObject();
+        obj.put("name", name);
+        obj.put("port", port);
+        obj.put("messages", oldFile.exists() ? getMsgs(oldHost) : List.of());
+
+        try (FileWriter file = new FileWriter(chatFile)) {
+            file.write(obj.toString(4)); //pretty-printing (indentation)
+            file.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(!host.equals(oldHost)) oldFile.delete();
+    }
 
     public JSONArray getMsgs(String host)  {
         try {

@@ -24,17 +24,19 @@ public class NewChat {
         HEIGHT = g.getSize().getRows();
         createPage();
     }
-    private String host = "";
-    private String port = "1337";
-    private String name = "";
+    private String oldHost = "";
+    private String[] host = {"", ""};
+    private String[] port = {"51337", ""};
+    private String[] name = {"", ""};
     private boolean editMode = false;
     public NewChat(Terminal terminal, Screen screen, TextGraphics g, String host) throws IOException {
         this.terminal = terminal;
         this.screen = screen;
         this.g = g;
-        this.host = host;
-        this.port = messageManager.getPort(host) != null ? messageManager.getPort(host) : "1337";
-        this.name = messageManager.getName(host) != null ? messageManager.getName(host) : host;
+        oldHost = host;
+        this.host[0] = host;
+        this.port[0] = messageManager.getPort(host) != null ? messageManager.getPort(host) : port[0];
+        this.name[0] = messageManager.getName(host) != null ? messageManager.getName(host) : host;
         editMode = true;
         WIDTH = g.getSize().getColumns();
         HEIGHT = g.getSize().getRows();
@@ -78,9 +80,10 @@ public class NewChat {
         // Draw "Host" box
         Main.drawTextLeft(leftTextEdge, currentY, "Host", g);
         Main.drawBox(leftBoxEdge, currentY-1, WIDTH-3, currentY+1, g);
-        if(!host.isBlank()) Main.drawTextLeft(leftBoxEdge+1, currentY, host, g);
+        String fullHost = host[0]+host[1];
+        if(!fullHost.isBlank()) Main.drawTextLeft(leftBoxEdge+1, currentY, fullHost, g);
         if(selectedBox == boxes.HOST) {
-            cursorPos[0] = leftBoxEdge+1+host.length();
+            cursorPos[0] = leftBoxEdge+1+fullHost.length();
             cursorPos[1] = currentY;
         }
 
@@ -88,9 +91,10 @@ public class NewChat {
         currentY += boxYGap;
         Main.drawTextLeft(leftTextEdge, currentY, "Port", g);
         Main.drawBox(leftBoxEdge, currentY-1, WIDTH-3, currentY+1, g);
-        if(!port.isBlank()) Main.drawTextLeft(leftBoxEdge+1, currentY, port, g);
+        String fullPort = port[0]+port[1];
+        if(!fullPort.isBlank()) Main.drawTextLeft(leftBoxEdge+1, currentY, fullPort, g);
         if(selectedBox == boxes.PORT) {
-            cursorPos[0] = leftBoxEdge+1+port.length();
+            cursorPos[0] = leftBoxEdge+1+fullPort.length();
             cursorPos[1] = currentY;
         }
 
@@ -98,9 +102,10 @@ public class NewChat {
         currentY += boxYGap;
         Main.drawTextLeft(leftTextEdge, currentY, "Name", g);
         Main.drawBox(leftBoxEdge, currentY-1, WIDTH-3, currentY+1, g);
-        if(!name.isBlank()) Main.drawTextLeft(leftBoxEdge+1, currentY, name, g);
+        String fullName = name[0]+name[1];
+        if(!fullName.isBlank()) Main.drawTextLeft(leftBoxEdge+1, currentY, fullName, g);
         if(selectedBox == boxes.NAME) {
-            cursorPos[0] = leftBoxEdge+1+name.length();
+            cursorPos[0] = leftBoxEdge+1+fullName.length();
             cursorPos[1] = currentY;
         }
 
@@ -134,27 +139,61 @@ public class NewChat {
                 else if (selectedBox == boxes.PORT) selectedBox = boxes.HOST;
                 updateInputs();
             } else if (key.getKeyType() == KeyType.Enter && selectedBox == boxes.SAVE) {
-                // SAVE LOGIC
-                messageManager.newChat(host, port, name);
+                String fullHost = host[0]+host[1];
+                String fullPort = port[0]+port[1];
+                String fullName = name[0]+name[1];
+
+                if(editMode)
+                    messageManager.editChat(oldHost, fullHost, fullPort, fullName);
+                else messageManager.newChat(fullHost, fullPort, fullName);
                 break;
-            } else if (key.getKeyType() == KeyType.Character) {
-                char c = key.getCharacter();
-                if (selectedBox == boxes.HOST) host += c;
-                if (selectedBox == boxes.PORT) port += c;
-                if (selectedBox == boxes.NAME) name += c;
-                g.setCharacter(cursorPos[0], cursorPos[1], c);
-                cursorPos[0]++;
-                screen.setCursorPosition(new TerminalPosition(cursorPos[0], cursorPos[1]));
-                screen.refresh();
-            } else if (key.getKeyType() == KeyType.Backspace && selectedBox != boxes.SAVE) {
-                if (selectedBox == boxes.HOST) host = host.substring(0, host.length() - 1);
-                if (selectedBox == boxes.PORT) port = port.substring(0, port.length() - 1);
-                if (selectedBox == boxes.NAME) name = name.substring(0, name.length() - 1);
-                g.setCharacter(cursorPos[0] - 1, cursorPos[1], ' ');
-                cursorPos[0]--;
-                screen.setCursorPosition(new TerminalPosition(cursorPos[0], cursorPos[1]));
-                screen.refresh();
+            } else {
+                String[] typingMsg =
+                    switch (selectedBox){
+                        case HOST -> host;
+                        case PORT -> port;
+                        case NAME -> name;
+                        case SAVE -> new String[2];
+                    };
+                if (key.getKeyType() == KeyType.ArrowLeft) {
+                    if (!typingMsg[0].isEmpty()) {
+                        typingMsg[1] = typingMsg[0].charAt(typingMsg[0].length() -1) + typingMsg[1];
+                        typingMsg[0] = typingMsg[0].substring(0, typingMsg[0].length() - 1);
+
+                        cursorPos[0]--;
+                        updateCursor();
+                        screen.refresh();
+                    }
+                } else if (key.getKeyType() == KeyType.ArrowRight) {
+                    if (!typingMsg[1].isEmpty()) {
+                        typingMsg[0] += typingMsg[1].charAt(0);
+                        typingMsg[1] = typingMsg[1].substring(1);
+
+                        cursorPos[0]++;
+                        updateCursor();
+                        screen.refresh();
+                    }
+                } else if (key.getKeyType() == KeyType.Character) {
+                    g.setCharacter(cursorPos[0], cursorPos[1], key.getCharacter());
+                    cursorPos[0]++;
+                    updateCursor();
+                    Main.drawTextLeft(cursorPos[0], cursorPos[1], typingMsg[1], g);
+                    screen.refresh();
+                    typingMsg[0] += key.getCharacter();
+                } else if (key.getKeyType() == KeyType.Backspace && selectedBox != boxes.SAVE) {
+                    g.setCharacter(cursorPos[0] - 1, cursorPos[1], ' ');
+                    if (!typingMsg[0].isEmpty()) {
+                        cursorPos[0]--;
+                        updateCursor();
+                        typingMsg[0] = typingMsg[0].substring(0, typingMsg[0].length() - 1);
+                    }
+                    Main.drawTextLeft(cursorPos[0], cursorPos[1], typingMsg[1]+" ", g);
+                    screen.refresh();
+                }
             }
         }
+    }
+    private void updateCursor(){
+        screen.setCursorPosition(new TerminalPosition(cursorPos[0], cursorPos[1]));
     }
 }

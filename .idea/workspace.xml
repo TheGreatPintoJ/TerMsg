@@ -12,7 +12,6 @@
     <list default="true" id="ac22ef90-7ef0-4fb9-ac1b-4280adfc7298" name="Changes" comment="Newchat stuff and editing typed message">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/pintoadmin/MessageManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/MessageManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/Chat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/Chat.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/NewChat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/NewChat.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -119,9 +118,9 @@
   "keyToString": {
     "Gradle.Build TerMsg.executor": "Run",
     "Gradle.Download Sources.executor": "Run",
-    "Gradle.TerMsg [build].executor": "Debug",
+    "Gradle.TerMsg [build].executor": "Run",
     "Gradle.TerMsg [clean build].executor": "Run",
-    "JAR Application.Build & Run.executor": "Debug",
+    "JAR Application.Build & Run.executor": "Run",
     "JAR Application.Run.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
@@ -148,7 +147,7 @@
       <command value="gradle clean build" />
     </option>
   </component>
-  <component name="RunManager" selected="JAR Application.Build &amp; Run">
+  <component name="RunManager" selected="Gradle.TerMsg [build]">
     <configuration name="TerMsg [build]" type="GradleRunConfiguration" factoryName="Gradle" activateToolWindowBeforeRun="false" show_console_on_std_err="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -295,7 +294,15 @@
       <option name="project" value="LOCAL" />
       <updated>1774294465490</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Newchat stuff and editing typed message">
+      <option name="closed" value="true" />
+      <created>1774492180392</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1774492180392</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -307,17 +314,6 @@
     <MESSAGE value="Interactions and msgbox input" />
     <MESSAGE value="Newchat stuff and editing typed message" />
     <option name="LAST_COMMIT_MESSAGE" value="Newchat stuff and editing typed message" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/Chat.java</url>
-          <line>188</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
