@@ -2,16 +2,11 @@ package me.pintoadmin;
 
 import com.googlecode.lanterna.*;
 import com.googlecode.lanterna.graphics.*;
-import com.googlecode.lanterna.input.KeyStroke;
-import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.*;
 import com.googlecode.lanterna.terminal.*;
 import me.pintoadmin.pages.*;
-import org.w3c.dom.Text;
 
 import java.io.*;
-import java.nio.file.NoSuchFileException;
-import java.util.Set;
 
 public class Main {
     public static TextColor BLACK = new TextColor.RGB(0, 0, 0);

@@ -11,13 +11,11 @@ import java.io.*;
 
 public class NewChat {
     private final MessageManager messageManager = MessageManager.getInstance();
-    private final Terminal terminal;
     private final Screen screen;
     private final TextGraphics g;
     private final int WIDTH;
     private final int HEIGHT;
-    public NewChat(Terminal terminal, Screen screen, TextGraphics g) throws IOException {
-        this.terminal = terminal;
+    public NewChat(Screen screen, TextGraphics g) throws IOException {
         this.screen = screen;
         this.g = g;
         WIDTH = g.getSize().getColumns();
@@ -25,12 +23,11 @@ public class NewChat {
         createPage();
     }
     private String oldHost = "";
-    private String[] host = {"", ""};
-    private String[] port = {"51337", ""};
-    private String[] name = {"", ""};
+    private final String[] host = {"", ""};
+    private final String[] port = {"51337", ""};
+    private final String[] name = {"", ""};
     private boolean editMode = false;
-    public NewChat(Terminal terminal, Screen screen, TextGraphics g, String host) throws IOException {
-        this.terminal = terminal;
+    public NewChat(Screen screen, TextGraphics g, String host) throws IOException {
         this.screen = screen;
         this.g = g;
         oldHost = host;
@@ -42,7 +39,7 @@ public class NewChat {
         HEIGHT = g.getSize().getRows();
         createPage();
     }
-    private int[] cursorPos = {-1,-1};
+    private final int[] cursorPos = {-1,-1};
 
     private enum boxes {
         HOST,

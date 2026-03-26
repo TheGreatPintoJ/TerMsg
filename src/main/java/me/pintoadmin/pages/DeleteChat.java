@@ -4,19 +4,16 @@ import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
-import com.googlecode.lanterna.terminal.Terminal;
 import me.pintoadmin.Main;
 import me.pintoadmin.MessageManager;
 
 import java.io.IOException;
 
 public class DeleteChat {
-    private final Terminal terminal;
     private final TextGraphics g;
     private final Screen screen;
     private final String host;
-    public DeleteChat(Terminal terminal, Screen screen, TextGraphics g, String hostToDelete) throws IOException {
-        this.terminal = terminal;
+    public DeleteChat(Screen screen, TextGraphics g, String hostToDelete) throws IOException {
         this.g = g;
         this.screen = screen;
         host = hostToDelete;

@@ -172,7 +172,7 @@ public class Chat {
             KeyStroke key = screen.pollInput();
             if(key == null) continue;
             if (key.getKeyType() == KeyType.Escape) {
-                new Settings(terminal, screen, g);
+                new Settings(screen, g);
                 createPage();
             }
             if(selected == cursorSel.MSGBOX) {
@@ -228,7 +228,7 @@ public class Chat {
                     createPage();
                     break;
                 } else if(key.getKeyType() == KeyType.Enter){
-                    new NewChat(terminal, screen, g);
+                    new NewChat(screen, g);
                     createPage();
                     break;
                 }
@@ -254,10 +254,10 @@ public class Chat {
                             screen.close();
                             throw new RuntimeException("quit");
                         } else if(key.getCharacter() == 'e'){
-                            new NewChat(terminal, screen, g, contactMap.get(contacts.get(selectedContact)));
+                            new NewChat(screen, g, contactMap.get(contacts.get(selectedContact)));
                             createPage();
                         } else if(key.getCharacter() == 'd'){
-                            new DeleteChat(terminal, screen, g, contactMap.get(contacts.get(selectedContact)));
+                            new DeleteChat(screen, g, contactMap.get(contacts.get(selectedContact)));
                             selectedContact--;
                             createPage();
                         }
