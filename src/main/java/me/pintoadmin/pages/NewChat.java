@@ -10,6 +10,7 @@ import me.pintoadmin.*;
 import java.io.*;
 
 public class NewChat {
+    private final MessageManager messageManager = MessageManager.getInstance();
     private final Terminal terminal;
     private final Screen screen;
     private final TextGraphics g;
@@ -23,11 +24,23 @@ public class NewChat {
         HEIGHT = g.getSize().getRows();
         createPage();
     }
-    private int[] cursorPos = {-1,-1};
-
     private String host = "";
     private String port = "1337";
     private String name = "";
+    private boolean editMode = false;
+    public NewChat(Terminal terminal, Screen screen, TextGraphics g, String host) throws IOException {
+        this.terminal = terminal;
+        this.screen = screen;
+        this.g = g;
+        this.host = host;
+        this.port = messageManager.getPort(host) != null ? messageManager.getPort(host) : "1337";
+        this.name = messageManager.getName(host) != null ? messageManager.getName(host) : host;
+        editMode = true;
+        WIDTH = g.getSize().getColumns();
+        HEIGHT = g.getSize().getRows();
+        createPage();
+    }
+    private int[] cursorPos = {-1,-1};
 
     private enum boxes {
         HOST,
@@ -46,7 +59,7 @@ public class NewChat {
         g.fill(' '); // Reset Screen
 
         Main.drawBox(1, 0, WIDTH-1, HEIGHT-1, g);
-        Main.drawText(WIDTH/2, 2, "NEW MESSAGE", g);
+        Main.drawText(WIDTH/2, 2, editMode ? "EDIT CONTACT" : "NEW CHAT", g);
 
         updateInputs();
         handleInput();
@@ -103,42 +116,41 @@ public class NewChat {
         screen.refresh();
     }
     private void handleInput() throws IOException {
-        mainLoop:
-        while(true) {
+        while (true) {
             KeyStroke key = screen.pollInput();
             if (key == null) continue;
             if (key.getKeyType() == KeyType.Escape) {
                 screen.setCursorPosition(null);
                 break;
             }
-            if (key.getKeyType() == KeyType.ArrowDown || key.getKeyType() == KeyType.Tab){
-                if(selectedBox == boxes.HOST) selectedBox = boxes.PORT;
-                else if(selectedBox == boxes.PORT) selectedBox = boxes.NAME;
-                else if(selectedBox == boxes.NAME) selectedBox = boxes.SAVE;
+            if (key.getKeyType() == KeyType.ArrowDown || key.getKeyType() == KeyType.Tab) {
+                if (selectedBox == boxes.HOST) selectedBox = boxes.PORT;
+                else if (selectedBox == boxes.PORT) selectedBox = boxes.NAME;
+                else if (selectedBox == boxes.NAME) selectedBox = boxes.SAVE;
                 updateInputs();
-            } else if(key.getKeyType() == KeyType.ArrowUp || key.getKeyType() == KeyType.ReverseTab){
-                if(selectedBox == boxes.SAVE) selectedBox = boxes.NAME;
-                else if(selectedBox == boxes.NAME) selectedBox = boxes.PORT;
-                else if(selectedBox == boxes.PORT) selectedBox = boxes.HOST;
+            } else if (key.getKeyType() == KeyType.ArrowUp || key.getKeyType() == KeyType.ReverseTab) {
+                if (selectedBox == boxes.SAVE) selectedBox = boxes.NAME;
+                else if (selectedBox == boxes.NAME) selectedBox = boxes.PORT;
+                else if (selectedBox == boxes.PORT) selectedBox = boxes.HOST;
                 updateInputs();
-            } else if(key.getKeyType() == KeyType.Enter && selectedBox == boxes.SAVE){
+            } else if (key.getKeyType() == KeyType.Enter && selectedBox == boxes.SAVE) {
                 // SAVE LOGIC
-                MessageManager.getInstance().newChat(host, port, name);
+                messageManager.newChat(host, port, name);
                 break;
-            } else if(key.getKeyType() == KeyType.Character){
+            } else if (key.getKeyType() == KeyType.Character) {
                 char c = key.getCharacter();
-                if(selectedBox == boxes.HOST) host += c;
-                if(selectedBox == boxes.PORT) port += c;
-                if(selectedBox == boxes.NAME) name += c;
+                if (selectedBox == boxes.HOST) host += c;
+                if (selectedBox == boxes.PORT) port += c;
+                if (selectedBox == boxes.NAME) name += c;
                 g.setCharacter(cursorPos[0], cursorPos[1], c);
                 cursorPos[0]++;
                 screen.setCursorPosition(new TerminalPosition(cursorPos[0], cursorPos[1]));
                 screen.refresh();
-            } else if(key.getKeyType() == KeyType.Backspace && selectedBox != boxes.SAVE){
-                if(selectedBox == boxes.HOST) host = host.substring(0, host.length()-1);
-                if(selectedBox == boxes.PORT) port = port.substring(0, port.length()-1);
-                if(selectedBox == boxes.NAME) name = name.substring(0, name.length()-1);
-                g.setCharacter(cursorPos[0]-1, cursorPos[1], ' ');
+            } else if (key.getKeyType() == KeyType.Backspace && selectedBox != boxes.SAVE) {
+                if (selectedBox == boxes.HOST) host = host.substring(0, host.length() - 1);
+                if (selectedBox == boxes.PORT) port = port.substring(0, port.length() - 1);
+                if (selectedBox == boxes.NAME) name = name.substring(0, name.length() - 1);
+                g.setCharacter(cursorPos[0] - 1, cursorPos[1], ' ');
                 cursorPos[0]--;
                 screen.setCursorPosition(new TerminalPosition(cursorPos[0], cursorPos[1]));
                 screen.refresh();

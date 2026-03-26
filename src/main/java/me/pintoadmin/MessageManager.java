@@ -1,6 +1,7 @@
 package me.pintoadmin;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -64,23 +65,19 @@ public class MessageManager {
         String dataDir = Main.getDataDir();
         File chatFile = new File(dataDir + host);
 
-        if(chatFile.exists()) return;
-
         // TODO: make sure host is valid and ping
-
-        // 1. Create the JSON object
         JSONObject obj = new JSONObject();
         obj.put("name", name);
         obj.put("port", port);
-        obj.put("messages", List.of());
+        obj.put("messages", chatFile.exists() ? getMsgs(host) : List.of());
 
-        // 2. Write the JSON string to a file
         try (FileWriter file = new FileWriter(chatFile)) {
             file.write(obj.toString(4)); //pretty-printing (indentation)
             file.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     public JSONArray getMsgs(String host)  {
@@ -128,6 +125,8 @@ public class MessageManager {
             return root.getString("name");
         } catch (FileNotFoundException e){
             return host;
+        } catch (JSONException e){
+            return null;
         }
     }
     public String getPort(String host) throws IOException{
@@ -140,6 +139,8 @@ public class MessageManager {
             return root.getString("port");
         } catch (FileNotFoundException e){
             return host;
+        } catch (JSONException e){
+            return null;
         }
     }
 }

@@ -30,6 +30,7 @@ public class Chat {
     }
 
     private final List<String> contacts = new ArrayList<>();
+    private final Map<String, String> contactMap = new HashMap<>(); // Name to Host
 
     private int selectedContact = -1;
     private enum cursorSel {
@@ -40,7 +41,7 @@ public class Chat {
     private cursorSel selected = cursorSel.CONTACT;
 
     private int[] writingCursor = new int[2];
-    private String typingMsg = "";
+    private String[] typingMsg = {"", ""}; // 0-before cursor 1-after cursor
 
     private void createPage() throws IOException {
         screen.clear();
@@ -72,14 +73,17 @@ public class Chat {
         if(files != null) {
             for (File file : files) {
                 if (file.isFile()) {
-                    contacts.add(MessageManager.getInstance().getName(file.getName()));
+                    String host = file.getName();
+                    String name = MessageManager.getInstance().getName(host);
+                    contacts.add(name);
+                    contactMap.put(name, host);
                 }
             }
         }
 
         int idx = 2;
         for(String entry : contacts){
-            if(contacts.indexOf(entry) == selectedContact){
+            if(contacts.indexOf(entry) == selectedContact && selected != cursorSel.NEWMSG){
                 g.setForegroundColor(Main.TRUE_BLACK);
                 g.setBackgroundColor(Main.GREEN);
             } else {
@@ -110,7 +114,7 @@ public class Chat {
         if(selectedContact != -1){
             Main.drawText(2*WIDTH/3, 1, contacts.get(selectedContact), g);
 
-            JSONArray messages = msgMan.getMsgs(contacts.get(selectedContact));
+            JSONArray messages = msgMan.getMsgs(contactMap.get(contacts.get(selectedContact)));
 
             for (int i = 0; i < messages.length(); i++) {
                 JSONObject msg = messages.getJSONObject(i);
@@ -171,23 +175,43 @@ public class Chat {
                 createPage();
             }
             if(selected == cursorSel.MSGBOX) {
-                if (key.getKeyType() == KeyType.Character) {
+                if (key.getKeyType() == KeyType.ArrowLeft) {
+                    if (!typingMsg[0].isEmpty()) {
+                        typingMsg[1] = typingMsg[0].charAt(typingMsg[0].length() -1) + typingMsg[1];
+                        typingMsg[0] = typingMsg[0].substring(0, typingMsg[0].length() - 1);
+
+                        writingCursor[0]--;
+                        setMsgBoxCursor();
+                        screen.refresh();
+                    }
+                } else if (key.getKeyType() == KeyType.ArrowRight) {
+                    if (!typingMsg[1].isEmpty()) {
+                        typingMsg[0] += typingMsg[1].charAt(0);
+                        typingMsg[1] = typingMsg[1].substring(1);
+
+                        writingCursor[0]++;
+                        setMsgBoxCursor();
+                        screen.refresh();
+                    }
+                } else if (key.getKeyType() == KeyType.Character) {
                     g.setCharacter(writingCursor[0], writingCursor[1], key.getCharacter());
                     writingCursor[0]++;
                     setMsgBoxCursor();
+                    Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[1], g);
                     screen.refresh();
-                    typingMsg += key.getCharacter();
+                    typingMsg[0] += key.getCharacter();
                 } else if (key.getKeyType() == KeyType.Backspace) {
                     g.setCharacter(writingCursor[0] - 1, writingCursor[1], ' ');
-                    if (!typingMsg.isEmpty()) {
+                    if (!typingMsg[0].isEmpty()) {
                         writingCursor[0]--;
                         setMsgBoxCursor();
-                        typingMsg = typingMsg.substring(0, typingMsg.length() - 1);
+                        typingMsg[0] = typingMsg[0].substring(0, typingMsg[0].length() - 1);
                     }
                     screen.refresh();
                 } else if (key.getKeyType() == KeyType.Enter) {
-                    MessageManager.getInstance().sendMessage(typingMsg, contacts.get(selectedContact));
-                    typingMsg = "";
+                    String fullMsg = typingMsg[0]+typingMsg[1];
+                    MessageManager.getInstance().sendMessage(fullMsg, contactMap.get(contacts.get(selectedContact)));
+                    typingMsg = new String[]{"", ""};
                     writingCursor = new int[]{WIDTH / 3 + 3, HEIGHT - 2};
                     setMsgBoxCursor();
                     createPage();
@@ -222,11 +246,15 @@ public class Chat {
                         selected = cursorSel.MSGBOX;
                         setMsgBoxCursor();
                         updateMessages();
+                        screen.refresh();
                         break;
                     case KeyType.Character:
                         if (key.getCharacter() == 'q') {
                             screen.close();
                             throw new RuntimeException("quit");
+                        } else if(key.getCharacter() == 'e'){
+                            new NewChat(terminal, screen, g, contactMap.get(contacts.get(selectedContact)));
+                            createPage();
                         }
                         break;
                     default:
