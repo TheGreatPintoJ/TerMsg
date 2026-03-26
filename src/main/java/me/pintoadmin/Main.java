@@ -88,7 +88,7 @@ public class Main {
         }
     }
 
-    private static  void setChar(int x, int y, char c, TextGraphics g){
+    private static void setChar(int x, int y, char c, TextGraphics g){
         TextCharacter charred = g.getCharacter(x, y);
         if(charred == null) {
             g.setCharacter(x,y,c);
@@ -112,6 +112,10 @@ public class Main {
         } else {
             g.setCharacter(x,y,c);
         }
+    }
+    public static void resetColors(TextGraphics g){
+        g.setBackgroundColor(Main.BLACK);
+        g.setForegroundColor(Main.GREEN);
     }
 
     public static OSTYPES getOS(){

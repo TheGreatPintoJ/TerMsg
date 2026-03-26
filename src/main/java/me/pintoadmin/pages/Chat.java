@@ -69,6 +69,7 @@ public class Chat {
         }
 
         contacts.clear(); // Clear contacts
+        contactMap.clear();
         File[] files = new File(Main.getDataDir()).listFiles();
         if(files != null) {
             for (File file : files) {
@@ -254,6 +255,10 @@ public class Chat {
                             throw new RuntimeException("quit");
                         } else if(key.getCharacter() == 'e'){
                             new NewChat(terminal, screen, g, contactMap.get(contacts.get(selectedContact)));
+                            createPage();
+                        } else if(key.getCharacter() == 'd'){
+                            new DeleteChat(terminal, screen, g, contactMap.get(contacts.get(selectedContact)));
+                            selectedContact--;
                             createPage();
                         }
                         break;

@@ -98,6 +98,12 @@ public class MessageManager {
         }
         if(!host.equals(oldHost)) oldFile.delete();
     }
+    public void removeChat(String host) {
+        String dataDir = Main.getDataDir();
+        File chatFile = new File(dataDir + host);
+
+        if(chatFile.exists()) chatFile.delete();
+    }
 
     public JSONArray getMsgs(String host)  {
         try {
