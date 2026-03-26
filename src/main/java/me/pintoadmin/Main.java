@@ -133,8 +133,8 @@ public class Main {
     public static String getDataDir(){
         return switch (getOS()) {
                     case LINUX -> System.getenv("HOME") + "/.local/share/termsg/";
-                    case WINDOWS -> System.getenv("LOCALAPPDATA")+"/termsg";
-                    case MAC -> System.getProperty("user.home") + "/Library/Application Support/";
+                    case WINDOWS -> System.getenv("LOCALAPPDATA")+"/termsg/";
+                    case MAC -> System.getProperty("user.home") + "/Library/Application Support/termsg/";
                 };
 
     }
