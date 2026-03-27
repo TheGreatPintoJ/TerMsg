@@ -24,7 +24,7 @@ public class Main {
         WINDOWS,
         MAC,
         LINUX
-    };
+    }
 
     /*             ╭──────────────────────╮
     MESSAGEBUBBLE <╡ TEXT HERE            │

@@ -5,7 +5,6 @@ import com.googlecode.lanterna.graphics.*;
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
-import com.googlecode.lanterna.terminal.Terminal;
 import me.pintoadmin.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -42,6 +41,10 @@ public class Chat {
     private String[] typingMsg = {"", ""}; // 0-before cursor 1-after cursor
 
     private void createPage() throws IOException {
+        createPage(0);
+        handleInput();
+    }
+    private void createPage(int offset) throws IOException {
         screen.clear();
 
         g.setForegroundColor(Main.GREEN);
@@ -54,7 +57,7 @@ public class Chat {
         Main.drawText(WIDTH/6, 1,  "CONTACTS", g);
         g.drawLine(1, 2, WIDTH/3-1, 2, Main.HORIZONTAL);
 
-        g.drawLine(WIDTH/3+2, HEIGHT-3, WIDTH-2, HEIGHT-3, '=');
+        g.drawLine(WIDTH/3+2, HEIGHT-3-offset, WIDTH-2, HEIGHT-3-offset, '=');
 
         if(selected == cursorSel.NEWMSG){
             g.setForegroundColor(Main.BLACK);
@@ -97,15 +100,14 @@ public class Chat {
             idx++;
         }
 
-        updateMessages();
+        updateMessages(offset);
         screen.refresh();
-        handleInput();
     }
-    private void updateMessages() throws IOException {
+    private void updateMessages(int offset) throws IOException {
         MessageManager msgMan = MessageManager.getInstance();
         int leftMsgX = WIDTH/3+2;
         int rightMsgX = WIDTH-2;
-        int yLevel = HEIGHT-5;
+        int yLevel = HEIGHT-5-offset;
         int maxHeight = 3;
         writingCursor[0] = WIDTH/3+3;
         writingCursor[1] = HEIGHT-2;
@@ -118,7 +120,6 @@ public class Chat {
             for (int i = 0; i < messages.length(); i++) {
                 JSONObject msg = messages.getJSONObject(i);
                 String message = msg.getString("message");
-                String timestamp = msg.getString("timestamp");
                 boolean received = msg.getBoolean("received");
                 boolean read = msg.getBoolean("read");
 
@@ -180,7 +181,7 @@ public class Chat {
                         typingMsg[0] = typingMsg[0].substring(0, typingMsg[0].length() - 1);
 
                         writingCursor[0]--;
-                        setMsgBoxCursor();
+                        updateCursor();
                         screen.refresh();
                     }
                 } else if (key.getKeyType() == KeyType.ArrowRight) {
@@ -189,21 +190,37 @@ public class Chat {
                         typingMsg[1] = typingMsg[1].substring(1);
 
                         writingCursor[0]++;
-                        setMsgBoxCursor();
+                        updateCursor();
                         screen.refresh();
                     }
                 } else if (key.getKeyType() == KeyType.Character) {
-                    g.setCharacter(writingCursor[0], writingCursor[1], key.getCharacter());
-                    writingCursor[0]++;
-                    setMsgBoxCursor();
-                    Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[1], g);
+                    if(writingCursor[0] < WIDTH-2) {
+                        g.setCharacter(writingCursor[0], writingCursor[1], key.getCharacter());
+                        writingCursor[0]++;
+                        updateCursor();
+                        Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[1], g);
+                        typingMsg[0] += key.getCharacter();
+                    } else {
+                        List<String> lines = getLines(WIDTH/2, typingMsg[0]);
+                        int numLines = lines.size();
+//                      split last word
+                        String lastWord = Arrays.stream(typingMsg[0].split(" ")).toList().getLast();
+//                      bump messages up
+                        createPage(numLines-1);
+//                      bump typingmsg up
+                        for(String line : lines){
+                            Main.drawTextLeft(writingCursor[0], writingCursor[1]-(numLines-lines.indexOf(line)), line, g);
+                        }
+//                      reset cursor to word length
+                        writingCursor[0] += lastWord.length();
+                    }
+                    updateCursor();
                     screen.refresh();
-                    typingMsg[0] += key.getCharacter();
                 } else if (key.getKeyType() == KeyType.Backspace) {
-                    g.setCharacter(writingCursor[0] - 1, writingCursor[1], ' ');
                     if (!typingMsg[0].isEmpty()) {
+                        g.setCharacter(writingCursor[0] - 1, writingCursor[1], ' ');
                         writingCursor[0]--;
-                        setMsgBoxCursor();
+                        updateCursor();
                         typingMsg[0] = typingMsg[0].substring(0, typingMsg[0].length() - 1);
                     }
                     screen.refresh();
@@ -212,7 +229,7 @@ public class Chat {
                     MessageManager.getInstance().sendMessage(fullMsg, contactMap.get(contacts.get(selectedContact)));
                     typingMsg = new String[]{"", ""};
                     writingCursor = new int[]{WIDTH / 3 + 3, HEIGHT - 2};
-                    setMsgBoxCursor();
+                    updateCursor();
                     createPage();
                     break;
                 } else if (key.getKeyType() == KeyType.Tab) {
@@ -243,8 +260,8 @@ public class Chat {
                         break mainLoop;
                     case KeyType.ArrowRight, KeyType.Tab:
                         selected = cursorSel.MSGBOX;
-                        setMsgBoxCursor();
-                        updateMessages();
+                        updateCursor();
+                        updateMessages(0);
                         screen.refresh();
                         break;
                     case KeyType.Character:
@@ -267,7 +284,7 @@ public class Chat {
         }
     }
 
-    private void setMsgBoxCursor(){
+    private void updateCursor(){
         screen.setCursorPosition(new TerminalPosition(writingCursor[0], writingCursor[1]));
     }
 
