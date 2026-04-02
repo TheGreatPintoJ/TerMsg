@@ -18,9 +18,9 @@ public class Chat {
     private final TextGraphics g;
     private final int WIDTH;
     private final int HEIGHT;
-    public Chat(Screen screen, TextGraphics g) throws IOException {
-        this.screen = screen;
-        this.g = g;
+    public Chat() throws IOException {
+        this.screen = Main.screen;
+        this.g = Main.g;
         WIDTH = g.getSize().getColumns();
         HEIGHT = g.getSize().getRows();
         createPage();
@@ -42,6 +42,8 @@ public class Chat {
     private final List<String> beforeLines = new ArrayList<>();
     private final List<String> afterLines = new ArrayList<>();
 
+    //↕
+
     private void createPage() throws IOException {
         createPage(0);
         handleInput();
@@ -52,24 +54,6 @@ public class Chat {
         g.setForegroundColor(Main.GREEN);
         g.setBackgroundColor(Main.BLACK);
         g.fill(' '); // Reset Screen
-
-        Main.drawBox(0,0, WIDTH/3, HEIGHT-1, g);
-        Main.drawBox(WIDTH/3+1, 2, WIDTH-1, HEIGHT-1, g);
-
-        Main.drawText(WIDTH/6, 1,  "CONTACTS", g);
-        g.drawLine(1, 2, WIDTH/3-1, 2, Main.HORIZONTAL);
-
-        g.drawLine(WIDTH/3+2, HEIGHT-3-offset, WIDTH-2, HEIGHT-3-offset, '=');
-
-        if(selected == cursorSel.NEWMSG){
-            g.setForegroundColor(Main.BLACK);
-            g.setBackgroundColor(Main.GREEN);
-        }
-        g.putString(WIDTH/3-2, 1, "＋", SGR.BOLD);
-        if(selected == cursorSel.NEWMSG){
-            g.setForegroundColor(Main.GREEN);
-            g.setBackgroundColor(Main.BLACK);
-        }
 
         contacts.clear(); // Clear contacts
         contactMap.clear();
@@ -94,7 +78,7 @@ public class Chat {
                 g.setForegroundColor(Main.GREEN);
                 g.setBackgroundColor(Main.BLACK);
             }
-            Main.drawTextLeft(3, idx*2-1, entry, g);
+            Main.drawTextLeft(3, idx*2-1, entry);
 
             g.setForegroundColor(Main.GREEN);
             g.setBackgroundColor(Main.BLACK);
@@ -106,6 +90,7 @@ public class Chat {
         screen.refresh();
     }
     private void updateMessages(int offset) throws IOException {
+        // Message Loading
         MessageManager msgMan = MessageManager.getInstance();
         int leftMsgX = WIDTH/3+2;
         int rightMsgX = WIDTH-2;
@@ -115,10 +100,7 @@ public class Chat {
         writingCursor[1] = HEIGHT-2;
 
         if(selectedContact != -1){
-            Main.drawText(2*WIDTH/3, 1, contacts.get(selectedContact), g);
-
             JSONArray messages = msgMan.getMsgs(contactMap.get(contacts.get(selectedContact)));
-
             for (int i = 0; i < messages.length(); i++) {
                 JSONObject msg = messages.getJSONObject(i);
                 String message = msg.getString("message");
@@ -133,27 +115,27 @@ public class Chat {
                 List<String> messageLines = getLines(WIDTH/2, message);
                 int longest = getLongest(messageLines);
                 if(received) {
-                    Main.drawTextLeft(leftMsgX + 1, yLevel - messageLines.size(), getTopBubble(longest), g);
+                    Main.drawTextLeft(leftMsgX + 1, yLevel - messageLines.size(), getTopBubble(longest));
                     int index = messageLines.size()-1;
                     for(String line : messageLines) {
                         int endSpace = longest-line.length();
                         if(line.equals(messageLines.getLast()))
-                            Main.drawTextLeft(leftMsgX, yLevel, "<╡ " + line +whitespace(endSpace)+"│", g);
-                        else Main.drawTextLeft(leftMsgX+1, yLevel-index, "│ " + line +whitespace(endSpace)+"│", g);
+                            Main.drawTextLeft(leftMsgX, yLevel, "<╡ " + line +whitespace(endSpace)+"│");
+                        else Main.drawTextLeft(leftMsgX+1, yLevel-index, "│ " + line +whitespace(endSpace)+"│");
                         index--;
                     }
-                    Main.drawTextLeft(leftMsgX + 1, yLevel + 1, getBottomBubble(longest), g);
+                    Main.drawTextLeft(leftMsgX + 1, yLevel + 1, getBottomBubble(longest));
                 } else {
-                    Main.drawTextRight(rightMsgX - 1, yLevel - messageLines.size(), getTopBubble(longest), g);
+                    Main.drawTextRight(rightMsgX - 1, yLevel - messageLines.size(), getTopBubble(longest));
                     int index = messageLines.size()-1;
                     for(String line : messageLines) {
                         int endSpace = longest-line.length();
                         if(line.equals(messageLines.getLast()))
-                            Main.drawTextRight(rightMsgX, yLevel, "│ " + line +whitespace(endSpace)+"╞>", g);
-                        else Main.drawTextRight(rightMsgX-1, yLevel-index, "│ " + line +whitespace(endSpace)+"│", g);
+                            Main.drawTextRight(rightMsgX, yLevel, "│ " + line +whitespace(endSpace)+"╞>");
+                        else Main.drawTextRight(rightMsgX-1, yLevel-index, "│ " + line +whitespace(endSpace)+"│");
                         index--;
                     }
-                    Main.drawTextRight(rightMsgX - 1, yLevel + 1, getBottomBubble(longest), g);
+                    Main.drawTextRight(rightMsgX - 1, yLevel + 1, getBottomBubble(longest));
                 }
 
                 if(!read){
@@ -164,6 +146,27 @@ public class Chat {
                 if (yLevel <= maxHeight) break;
                 screen.refresh();
             }
+            Main.drawTextLeft(0,1, whitespace(WIDTH));
+            Main.drawText(2*WIDTH/3, 1, contacts.get(selectedContact));
+        }
+
+        // Update page
+        Main.drawBox(0,0, WIDTH/3, HEIGHT-1);
+        Main.drawBox(WIDTH/3+1, 2, WIDTH-1, HEIGHT-1);
+
+        Main.drawText(WIDTH/6, 1,  "CONTACTS");
+        g.drawLine(1, 2, WIDTH/3-1, 2, Main.HORIZONTAL);
+
+        g.drawLine(WIDTH/3+2, HEIGHT-3-offset, WIDTH-2, HEIGHT-3-offset, '=');
+
+        if(selected == cursorSel.NEWMSG){
+            g.setForegroundColor(Main.BLACK);
+            g.setBackgroundColor(Main.GREEN);
+        }
+        g.putString(WIDTH/3-2, 1, "＋", SGR.BOLD);
+        if(selected == cursorSel.NEWMSG){
+            g.setForegroundColor(Main.GREEN);
+            g.setBackgroundColor(Main.BLACK);
         }
     }
 
@@ -173,7 +176,7 @@ public class Chat {
             KeyStroke key = screen.pollInput();
             if(key == null) continue;
             if (key.getKeyType() == KeyType.Escape) {
-                new Settings(screen, g);
+                new Settings();
                 createPage();
             }
             if(selected == cursorSel.MSGBOX) {
@@ -230,7 +233,7 @@ public class Chat {
                         g.setCharacter(writingCursor[0], writingCursor[1], key.getCharacter());
                         writingCursor[0]++;
                         updateCursor();
-                        Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[1], g);
+                        Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[1]);
                         typingMsg[0] += key.getCharacter();
                     } else {
                         typingMsg[0] += key.getCharacter();
@@ -247,10 +250,10 @@ public class Chat {
                         createPage(numLines);
 //                      bump typingmsg up
                         for(String line : beforeLines){
-                            Main.drawTextLeft(writingCursor[0], writingCursor[1]-(numLines-beforeLines.indexOf(line)), line, g);
+                            Main.drawTextLeft(writingCursor[0], writingCursor[1]-(numLines-beforeLines.indexOf(line)), line);
                         }
                         if(key.getCharacter() != ' ') {
-                            Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[0], g);
+                            Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[0]);
 //                          reset cursor to word length
                             writingCursor[0] += typingMsg[0].length();
                         }
@@ -262,7 +265,7 @@ public class Chat {
                         g.setCharacter(writingCursor[0] - 1, writingCursor[1], ' ');
                         writingCursor[0]--;
                         updateCursor();
-                        Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[1], g);
+                        Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[1]);
                         typingMsg[0] = typingMsg[0].substring(0, typingMsg[0].length() - 1);
                     } else {
                         int numLines = beforeLines.size();
@@ -271,9 +274,9 @@ public class Chat {
                         createPage(numLines-1);
 
                         for(String line : beforeLines){
-                            Main.drawTextLeft(writingCursor[0], writingCursor[1]-(numLines-1-beforeLines.indexOf(line)), line, g);
+                            Main.drawTextLeft(writingCursor[0], writingCursor[1]-(numLines-1-beforeLines.indexOf(line)), line);
                         }
-                        Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[0], g);
+                        Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[0]);
                         writingCursor[0] = WIDTH/3+3+typingMsg[0].length();
                         updateCursor();
                         screen.refresh();
@@ -286,8 +289,11 @@ public class Chat {
                     String fullMsg = "";
                     for(String line : allLines) fullMsg += line+" ";
                     MessageManager.getInstance().sendMessage(fullMsg, contactMap.get(contacts.get(selectedContact)));
+                    beforeLines.clear();
+                    afterLines.clear();
                     typingMsg = new String[]{"", ""};
                     writingCursor = new int[]{WIDTH / 3 + 3, HEIGHT - 2};
+
                     updateCursor();
                     createPage();
                     break;
@@ -302,7 +308,7 @@ public class Chat {
                     createPage();
                     break;
                 } else if(key.getKeyType() == KeyType.Enter){
-                    new NewChat(screen, g);
+                    new NewChat();
                     createPage();
                     break;
                 }
@@ -318,6 +324,7 @@ public class Chat {
                         createPage();
                         break mainLoop;
                     case KeyType.ArrowRight, KeyType.Tab:
+                        if(selectedContact == -1) break;
                         selected = cursorSel.MSGBOX;
                         updateCursor();
                         updateMessages(0);
@@ -328,10 +335,10 @@ public class Chat {
                             screen.close();
                             throw new RuntimeException("quit");
                         } else if(key.getCharacter() == 'e'){
-                            new NewChat(screen, g, contactMap.get(contacts.get(selectedContact)));
+                            new NewChat(contactMap.get(contacts.get(selectedContact)));
                             createPage();
                         } else if(key.getCharacter() == 'd'){
-                            new DeleteChat(screen, g, contactMap.get(contacts.get(selectedContact)));
+                            new DeleteChat(contactMap.get(contacts.get(selectedContact)));
                             selectedContact--;
                             createPage();
                         }

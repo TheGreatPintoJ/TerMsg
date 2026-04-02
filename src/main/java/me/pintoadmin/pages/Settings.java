@@ -13,9 +13,9 @@ import java.util.List;
 public class Settings {
     private final Screen screen;
     private final TextGraphics g;
-    public Settings(Screen screen, TextGraphics g) throws IOException {
-        this.screen = screen;
-        this.g = g;
+    public Settings() throws IOException {
+        this.screen = Main.screen;
+        this.g = Main.g;
         createPage();
     }
 
@@ -33,8 +33,8 @@ public class Settings {
 
         g.setForegroundColor(Main.GREEN);
         g.setBackgroundColor(Main.BLACK);
-        Main.drawBox(WIDTH/4, HEIGHT/4, 3*WIDTH/4, 3*HEIGHT/4, g);
-        Main.drawText(WIDTH/2, HEIGHT/4+1, "SETTINGS", g);
+        Main.drawBox(WIDTH/4, HEIGHT/4, 3*WIDTH/4, 3*HEIGHT/4);
+        Main.drawText(WIDTH/2, HEIGHT/4+1, "SETTINGS");
 
         int idx = 1;
         for(String entry : menuEntries){
@@ -45,7 +45,7 @@ public class Settings {
                 g.setForegroundColor(Main.GREEN);
                 g.setBackgroundColor(Main.BLACK);
             }
-            Main.drawText(WIDTH/2, HEIGHT/4+2+(2*idx), " "+entry+" ", g);
+            Main.drawText(WIDTH/2, HEIGHT/4+2+(2*idx), " "+entry+" ");
             idx++;
         }
 
@@ -57,8 +57,8 @@ public class Settings {
         int WIDTH = g.getSize().getColumns();
         int HEIGHT = g.getSize().getRows();
 
-        Main.drawBox(WIDTH/4,HEIGHT/4, (WIDTH-1)/4*3, (HEIGHT-1)/4*3, g);
-        Main.drawText((WIDTH/2)-1, (HEIGHT/2)-1, "WELCOME TO TERMSG", g);
+        Main.drawBox(WIDTH/4,HEIGHT/4, (WIDTH-1)/4*3, (HEIGHT-1)/4*3);
+        Main.drawText((WIDTH/2)-1, (HEIGHT/2)-1, "WELCOME TO TERMSG");
 
         screen.refresh();
     }

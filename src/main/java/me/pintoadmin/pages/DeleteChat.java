@@ -13,9 +13,9 @@ public class DeleteChat {
     private final TextGraphics g;
     private final Screen screen;
     private final String host;
-    public DeleteChat(Screen screen, TextGraphics g, String hostToDelete) throws IOException {
-        this.g = g;
-        this.screen = screen;
+    public DeleteChat(String hostToDelete) throws IOException {
+        this.g = Main.g;
+        this.screen = Main.screen;
         host = hostToDelete;
         createPage();
     }
@@ -29,20 +29,20 @@ public class DeleteChat {
         screen.clear();
         Main.resetColors(g);
 
-        Main.drawBox(WIDTH/4,HEIGHT/4, (WIDTH-1)/4*3, (HEIGHT-1)/4*3, g);
-        Main.drawText(WIDTH/2, (HEIGHT/2)-4, "CONFIRM", g);
-        Main.drawText(WIDTH/2, (HEIGHT/2)-3, "DELETE \""+host+"\"?", g);
+        Main.drawBox(WIDTH/4,HEIGHT/4, (WIDTH-1)/4*3, (HEIGHT-1)/4*3);
+        Main.drawText(WIDTH/2, (HEIGHT/2)-4, "CONFIRM");
+        Main.drawText(WIDTH/2, (HEIGHT/2)-3, "DELETE \""+host+"\"?");
 
         if(!yesSelected){
             g.setForegroundColor(Main.BLACK);
             g.setBackgroundColor(Main.GREEN);
         }
-        Main.drawTextRight(WIDTH/2-3, HEIGHT/2, "  NO ", g);
+        Main.drawTextRight(WIDTH/2-3, HEIGHT/2, "  NO ");
         if(yesSelected){
             g.setForegroundColor(Main.BLACK);
             g.setBackgroundColor(Main.GREEN);
         } else Main.resetColors(g);
-        Main.drawTextLeft(WIDTH/2+3, HEIGHT/2, " YES ", g);
+        Main.drawTextLeft(WIDTH/2+3, HEIGHT/2, " YES ");
 
         screen.refresh();
         handleInput();

@@ -4,7 +4,6 @@ import com.googlecode.lanterna.*;
 import com.googlecode.lanterna.graphics.*;
 import com.googlecode.lanterna.input.*;
 import com.googlecode.lanterna.screen.*;
-import com.googlecode.lanterna.terminal.*;
 import me.pintoadmin.*;
 
 import java.io.*;
@@ -15,9 +14,9 @@ public class NewChat {
     private final TextGraphics g;
     private final int WIDTH;
     private final int HEIGHT;
-    public NewChat(Screen screen, TextGraphics g) throws IOException {
-        this.screen = screen;
-        this.g = g;
+    public NewChat() throws IOException {
+        this.screen = Main.screen;
+        this.g = Main.g;
         WIDTH = g.getSize().getColumns();
         HEIGHT = g.getSize().getRows();
         createPage();
@@ -27,9 +26,9 @@ public class NewChat {
     private final String[] port = {"51337", ""};
     private final String[] name = {"", ""};
     private boolean editMode = false;
-    public NewChat(Screen screen, TextGraphics g, String host) throws IOException {
-        this.screen = screen;
-        this.g = g;
+    public NewChat(String host) throws IOException {
+        this.screen = Main.screen;
+        this.g = Main.g;
         oldHost = host;
         this.host[0] = host;
         this.port[0] = messageManager.getPort(host) != null ? messageManager.getPort(host) : port[0];
@@ -57,8 +56,8 @@ public class NewChat {
         g.setBackgroundColor(Main.BLACK);
         g.fill(' '); // Reset Screen
 
-        Main.drawBox(1, 0, WIDTH-1, HEIGHT-1, g);
-        Main.drawText(WIDTH/2, 2, editMode ? "EDIT CONTACT" : "NEW CHAT", g);
+        Main.drawBox(1, 0, WIDTH-1, HEIGHT-1);
+        Main.drawText(WIDTH/2, 2, editMode ? "EDIT CONTACT" : "NEW CHAT");
 
         updateInputs();
         handleInput();
@@ -75,10 +74,10 @@ public class NewChat {
 
         int currentY = boxYOffset+boxYGap;
         // Draw "Host" box
-        Main.drawTextLeft(leftTextEdge, currentY, "Host", g);
-        Main.drawBox(leftBoxEdge, currentY-1, WIDTH-3, currentY+1, g);
+        Main.drawTextLeft(leftTextEdge, currentY, "Host");
+        Main.drawBox(leftBoxEdge, currentY-1, WIDTH-3, currentY+1);
         String fullHost = host[0]+host[1];
-        if(!fullHost.isBlank()) Main.drawTextLeft(leftBoxEdge+1, currentY, fullHost, g);
+        if(!fullHost.isBlank()) Main.drawTextLeft(leftBoxEdge+1, currentY, fullHost);
         if(selectedBox == boxes.HOST) {
             cursorPos[0] = leftBoxEdge+1+fullHost.length();
             cursorPos[1] = currentY;
@@ -86,10 +85,10 @@ public class NewChat {
 
         // Draw "Port" box
         currentY += boxYGap;
-        Main.drawTextLeft(leftTextEdge, currentY, "Port", g);
-        Main.drawBox(leftBoxEdge, currentY-1, WIDTH-3, currentY+1, g);
+        Main.drawTextLeft(leftTextEdge, currentY, "Port");
+        Main.drawBox(leftBoxEdge, currentY-1, WIDTH-3, currentY+1);
         String fullPort = port[0]+port[1];
-        if(!fullPort.isBlank()) Main.drawTextLeft(leftBoxEdge+1, currentY, fullPort, g);
+        if(!fullPort.isBlank()) Main.drawTextLeft(leftBoxEdge+1, currentY, fullPort);
         if(selectedBox == boxes.PORT) {
             cursorPos[0] = leftBoxEdge+1+fullPort.length();
             cursorPos[1] = currentY;
@@ -97,10 +96,10 @@ public class NewChat {
 
         // Draw "Name" box
         currentY += boxYGap;
-        Main.drawTextLeft(leftTextEdge, currentY, "Name", g);
-        Main.drawBox(leftBoxEdge, currentY-1, WIDTH-3, currentY+1, g);
+        Main.drawTextLeft(leftTextEdge, currentY, "Name");
+        Main.drawBox(leftBoxEdge, currentY-1, WIDTH-3, currentY+1);
         String fullName = name[0]+name[1];
-        if(!fullName.isBlank()) Main.drawTextLeft(leftBoxEdge+1, currentY, fullName, g);
+        if(!fullName.isBlank()) Main.drawTextLeft(leftBoxEdge+1, currentY, fullName);
         if(selectedBox == boxes.NAME) {
             cursorPos[0] = leftBoxEdge+1+fullName.length();
             cursorPos[1] = currentY;
@@ -113,7 +112,7 @@ public class NewChat {
             g.setForegroundColor(Main.BLACK);
             g.setBackgroundColor(Main.GREEN);
         } else screen.setCursorPosition(new TerminalPosition(cursorPos[0], cursorPos[1]));
-        Main.drawText(WIDTH/2, currentY, " SAVE ", g);
+        Main.drawText(WIDTH/2, currentY, " SAVE ");
 
         screen.refresh();
     }
@@ -174,7 +173,7 @@ public class NewChat {
                     g.setCharacter(cursorPos[0], cursorPos[1], key.getCharacter());
                     cursorPos[0]++;
                     updateCursor();
-                    Main.drawTextLeft(cursorPos[0], cursorPos[1], typingMsg[1], g);
+                    Main.drawTextLeft(cursorPos[0], cursorPos[1], typingMsg[1]);
                     screen.refresh();
                     typingMsg[0] += key.getCharacter();
                 } else if (key.getKeyType() == KeyType.Backspace && selectedBox != boxes.SAVE) {
@@ -184,7 +183,7 @@ public class NewChat {
                         updateCursor();
                         typingMsg[0] = typingMsg[0].substring(0, typingMsg[0].length() - 1);
                     }
-                    Main.drawTextLeft(cursorPos[0], cursorPos[1], typingMsg[1]+" ", g);
+                    Main.drawTextLeft(cursorPos[0], cursorPos[1], typingMsg[1]+" ");
                     screen.refresh();
                 }
             }
