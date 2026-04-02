@@ -233,7 +233,20 @@ public class Chat {
                         writingCursor[0]--;
                         updateCursor();
                         typingMsg[0] = typingMsg[0].substring(0, typingMsg[0].length() - 1);
-                    } else beforeLines.clear(); // TODO: replace
+                    } else {
+                        int numLines = beforeLines.size();
+                        typingMsg[0] = beforeLines.getLast().substring(0, beforeLines.getLast().length()-1);
+                        beforeLines.removeLast();
+                        createPage(numLines-1);
+
+                        for(String line : beforeLines){
+                            Main.drawTextLeft(writingCursor[0], writingCursor[1]-(numLines-1-beforeLines.indexOf(line)), line, g);
+                        }
+                        Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[0], g);
+                        writingCursor[0] = WIDTH/3+3+typingMsg[0].length();
+                        updateCursor();
+                        screen.refresh();
+                    }
                     screen.refresh();
                 } else if (key.getKeyType() == KeyType.Enter) {
                     List<String> allLines = beforeLines;
