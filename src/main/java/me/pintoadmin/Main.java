@@ -24,7 +24,7 @@ public class Main {
     public static Screen screen;
     public static TextGraphics g;
 
-    public enum OSTYPES {
+    private enum OSTYPES {
         WINDOWS,
         MAC,
         LINUX
@@ -117,7 +117,7 @@ public class Main {
         g.setForegroundColor(Main.GREEN);
     }
 
-    public static OSTYPES getOS(){
+    private static OSTYPES getOS(){
         String os = System.getProperty("os.name").toLowerCase();
         OSTYPES type = OSTYPES.LINUX;
 
