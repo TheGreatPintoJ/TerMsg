@@ -39,8 +39,8 @@ public class Chat {
 
     private int[] writingCursor = new int[2];
     private String[] typingMsg = {"", ""}; // 0-before cursor 1-after cursor
-    private List<String> beforeLines = new ArrayList<>();
-    private List<String> afterLines = new ArrayList<>();
+    private final List<String> beforeLines = new ArrayList<>();
+    private final List<String> afterLines = new ArrayList<>();
 
     private void createPage() throws IOException {
         createPage(0);
@@ -195,6 +195,36 @@ public class Chat {
                         updateCursor();
                         screen.refresh();
                     }
+                } else if (key.getKeyType() == KeyType.ArrowUp){
+                    if (!beforeLines.isEmpty()) {
+                        afterLines.add(typingMsg[0]+typingMsg[1]);
+
+                        int place = typingMsg[0].length();
+                        typingMsg[0] = beforeLines.getLast().substring(0, place);
+                        typingMsg[1] = beforeLines.getLast().substring(place);
+
+                        beforeLines.removeLast();
+
+                        writingCursor[1]--;
+                        updateCursor();
+                        screen.refresh();
+                    }
+                } else if (key.getKeyType() == KeyType.ArrowDown){
+                    if (!afterLines.isEmpty()) {
+                        beforeLines.add(typingMsg[0]+typingMsg[1]);
+
+                        int place = typingMsg[0].length();
+                        typingMsg[0] = afterLines.getLast().substring(0, place);
+                        if(place < afterLines.getLast().length())
+                            typingMsg[1] = afterLines.getLast().substring(place);
+                        else typingMsg[1] = "";
+
+                        afterLines.removeLast();
+
+                        writingCursor[1]++;
+                        updateCursor();
+                        screen.refresh();
+                    }
                 } else if (key.getKeyType() == KeyType.Character) {
                     if(writingCursor[0] < WIDTH-3) {
                         g.setCharacter(writingCursor[0], writingCursor[1], key.getCharacter());
@@ -232,6 +262,7 @@ public class Chat {
                         g.setCharacter(writingCursor[0] - 1, writingCursor[1], ' ');
                         writingCursor[0]--;
                         updateCursor();
+                        Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[1], g);
                         typingMsg[0] = typingMsg[0].substring(0, typingMsg[0].length() - 1);
                     } else {
                         int numLines = beforeLines.size();
