@@ -39,6 +39,8 @@ public class Chat {
 
     private int[] writingCursor = new int[2];
     private String[] typingMsg = {"", ""}; // 0-before cursor 1-after cursor
+    private List<String> beforeLines = new ArrayList<>();
+    private List<String> afterLines = new ArrayList<>();
 
     private void createPage() throws IOException {
         createPage(0);
@@ -136,8 +138,8 @@ public class Chat {
                     for(String line : messageLines) {
                         int endSpace = longest-line.length();
                         if(line.equals(messageLines.getLast()))
-                            Main.drawTextLeft(leftMsgX, yLevel, "<╡" + line +whitespace(endSpace)+"│", g);
-                        else Main.drawTextLeft(leftMsgX+1, yLevel-index, "│" + line +whitespace(endSpace)+"│", g);
+                            Main.drawTextLeft(leftMsgX, yLevel, "<╡ " + line +whitespace(endSpace)+"│", g);
+                        else Main.drawTextLeft(leftMsgX+1, yLevel-index, "│ " + line +whitespace(endSpace)+"│", g);
                         index--;
                     }
                     Main.drawTextLeft(leftMsgX + 1, yLevel + 1, getBottomBubble(longest), g);
@@ -147,8 +149,8 @@ public class Chat {
                     for(String line : messageLines) {
                         int endSpace = longest-line.length();
                         if(line.equals(messageLines.getLast()))
-                            Main.drawTextRight(rightMsgX, yLevel, "│" + line +whitespace(endSpace)+"╞>", g);
-                        else Main.drawTextRight(rightMsgX-1, yLevel-index, "│" + line +whitespace(endSpace)+"│", g);
+                            Main.drawTextRight(rightMsgX, yLevel, "│ " + line +whitespace(endSpace)+"╞>", g);
+                        else Main.drawTextRight(rightMsgX-1, yLevel-index, "│ " + line +whitespace(endSpace)+"│", g);
                         index--;
                     }
                     Main.drawTextRight(rightMsgX - 1, yLevel + 1, getBottomBubble(longest), g);
@@ -194,25 +196,34 @@ public class Chat {
                         screen.refresh();
                     }
                 } else if (key.getKeyType() == KeyType.Character) {
-                    if(writingCursor[0] < WIDTH-2) {
+                    if(writingCursor[0] < WIDTH-3) {
                         g.setCharacter(writingCursor[0], writingCursor[1], key.getCharacter());
                         writingCursor[0]++;
                         updateCursor();
                         Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[1], g);
                         typingMsg[0] += key.getCharacter();
                     } else {
-                        List<String> lines = getLines(WIDTH/2, typingMsg[0]);
-                        int numLines = lines.size();
+                        typingMsg[0] += key.getCharacter();
 //                      split last word
-                        String lastWord = Arrays.stream(typingMsg[0].split(" ")).toList().getLast();
-//                      bump messages up
-                        createPage(numLines-1);
-//                      bump typingmsg up
-                        for(String line : lines){
-                            Main.drawTextLeft(writingCursor[0], writingCursor[1]-(numLines-lines.indexOf(line)), line, g);
+                        String lastWord = "";
+                        if(key.getCharacter() != ' ') {
+                            lastWord = Arrays.stream(typingMsg[0].split(" ")).toList().getLast();
+                            typingMsg[0] = typingMsg[0].substring(0, typingMsg[0].length() - lastWord.length()); // crop by last word length
                         }
-//                      reset cursor to word length
-                        writingCursor[0] += lastWord.length();
+                        beforeLines.add(typingMsg[0]);
+                        typingMsg[0] = lastWord;
+                        int numLines = beforeLines.size();
+//                      bump messages up
+                        createPage(numLines);
+//                      bump typingmsg up
+                        for(String line : beforeLines){
+                            Main.drawTextLeft(writingCursor[0], writingCursor[1]-(numLines-beforeLines.indexOf(line)), line, g);
+                        }
+                        if(key.getCharacter() != ' ') {
+                            Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[0], g);
+//                          reset cursor to word length
+                            writingCursor[0] += typingMsg[0].length();
+                        }
                     }
                     updateCursor();
                     screen.refresh();
@@ -222,10 +233,14 @@ public class Chat {
                         writingCursor[0]--;
                         updateCursor();
                         typingMsg[0] = typingMsg[0].substring(0, typingMsg[0].length() - 1);
-                    }
+                    } else beforeLines.clear(); // TODO: replace
                     screen.refresh();
                 } else if (key.getKeyType() == KeyType.Enter) {
-                    String fullMsg = typingMsg[0]+typingMsg[1];
+                    List<String> allLines = beforeLines;
+                    allLines.add(typingMsg[0]+typingMsg[1]);
+                    allLines.addAll(afterLines);
+                    String fullMsg = "";
+                    for(String line : allLines) fullMsg += line+" ";
                     MessageManager.getInstance().sendMessage(fullMsg, contactMap.get(contacts.get(selectedContact)));
                     typingMsg = new String[]{"", ""};
                     writingCursor = new int[]{WIDTH / 3 + 3, HEIGHT - 2};
@@ -325,14 +340,14 @@ public class Chat {
     }
 
     private String getTopBubble(int width){
-        String topBubbleLine = "╭";
+        String topBubbleLine = "╭─";
         for (int j = 0; j < width; j++)
             topBubbleLine += "─";
         topBubbleLine += "╮";
         return topBubbleLine;
     }
     private String getBottomBubble(int width){
-        String topBubbleLine = "╰";
+        String topBubbleLine = "╰─";
         for (int j = 0; j < width; j++)
             topBubbleLine += "─";
         topBubbleLine += "╯";
