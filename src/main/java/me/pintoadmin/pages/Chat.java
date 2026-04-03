@@ -146,6 +146,7 @@ public class Chat {
                 if (yLevel <= maxHeight) break;
                 screen.refresh();
             }
+            Main.drawTextLeft(0,0, whitespace(WIDTH));
             Main.drawTextLeft(0,1, whitespace(WIDTH));
             Main.drawText(2*WIDTH/3, 1, contacts.get(selectedContact));
         }
@@ -168,6 +169,7 @@ public class Chat {
             g.setForegroundColor(Main.GREEN);
             g.setBackgroundColor(Main.BLACK);
         }
+        screen.refresh();
     }
 
     private void handleInput() throws IOException {
@@ -229,35 +231,23 @@ public class Chat {
                         screen.refresh();
                     }
                 } else if (key.getKeyType() == KeyType.Character) {
-                    if(writingCursor[0] < WIDTH-3) {
+                    if(writingCursor[0] < WIDTH-3
+                        && writingCursor[0]+typingMsg[1].length() < WIDTH-3) {
+                        // valid char
                         g.setCharacter(writingCursor[0], writingCursor[1], key.getCharacter());
                         writingCursor[0]++;
-                        updateCursor();
                         Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[1]);
                         typingMsg[0] += key.getCharacter();
+                    } else if(writingCursor[0] >= WIDTH-3){
+                        // broke newline with cursor
+                        typingMsg[0] += key.getCharacter();
+                        reformatMessageBox();
                     } else {
                         typingMsg[0] += key.getCharacter();
-//                      split last word
-                        String lastWord = "";
-                        if(key.getCharacter() != ' ') {
-                            lastWord = Arrays.stream(typingMsg[0].split(" ")).toList().getLast();
-                            typingMsg[0] = typingMsg[0].substring(0, typingMsg[0].length() - lastWord.length()); // crop by last word length
-                        }
-                        beforeLines.add(typingMsg[0]);
-                        typingMsg[0] = lastWord;
-                        int numLines = beforeLines.size();
-//                      bump messages up
-                        createPage(numLines);
-//                      bump typingmsg up
-                        for(String line : beforeLines){
-                            Main.drawTextLeft(writingCursor[0], writingCursor[1]-(numLines-beforeLines.indexOf(line)), line);
-                        }
-                        if(key.getCharacter() != ' ') {
-                            Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[0]);
-//                          reset cursor to word length
-                            writingCursor[0] += typingMsg[0].length();
-                        }
+                        reformatMessageBox(); // broke newline with chars after cursor
                     }
+//                    typingMsg[0] += key.getCharacter();
+//                    reformatMessageBox();
                     updateCursor();
                     screen.refresh();
                 } else if (key.getKeyType() == KeyType.Backspace) {
@@ -268,35 +258,45 @@ public class Chat {
                         Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[1]);
                         typingMsg[0] = typingMsg[0].substring(0, typingMsg[0].length() - 1);
                     } else {
-                        int numLines = beforeLines.size();
-                        typingMsg[0] = beforeLines.getLast().substring(0, beforeLines.getLast().length()-1);
-                        beforeLines.removeLast();
-                        createPage(numLines-1);
+                        if(!beforeLines.isEmpty()) {
+                            int numLines = beforeLines.size();
+                            typingMsg[0] = beforeLines.getLast().substring(0, beforeLines.getLast().length()-1);
+                            beforeLines.removeLast();
+                            createPage(numLines-1);
 
-                        for(String line : beforeLines){
-                            Main.drawTextLeft(writingCursor[0], writingCursor[1]-(numLines-1-beforeLines.indexOf(line)), line);
+                            for(String line : beforeLines){
+                                Main.drawTextLeft(writingCursor[0], writingCursor[1]-(numLines-1-beforeLines.indexOf(line)), line);
+                            }
+                            Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[0]);
+                            writingCursor[0] = WIDTH/3+3+typingMsg[0].length();
+                            updateCursor();
+                            screen.refresh();
                         }
-                        Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[0]);
-                        writingCursor[0] = WIDTH/3+3+typingMsg[0].length();
-                        updateCursor();
-                        screen.refresh();
                     }
                     screen.refresh();
                 } else if (key.getKeyType() == KeyType.Enter) {
-                    List<String> allLines = beforeLines;
-                    allLines.add(typingMsg[0]+typingMsg[1]);
-                    allLines.addAll(afterLines);
-                    String fullMsg = "";
-                    for(String line : allLines) fullMsg += line+" ";
-                    MessageManager.getInstance().sendMessage(fullMsg, contactMap.get(contacts.get(selectedContact)));
-                    beforeLines.clear();
-                    afterLines.clear();
-                    typingMsg = new String[]{"", ""};
-                    writingCursor = new int[]{WIDTH / 3 + 3, HEIGHT - 2};
+                    if (key.isShiftDown()) {
+                        typingMsg[0] += "⏎";
+                        beforeLines.add(typingMsg[0]);
+                        typingMsg[0] = "";
 
-                    updateCursor();
-                    createPage();
-                    break;
+                        writingCursor = new int[]{WIDTH / 3 + 3, HEIGHT - 2};
+                        reformatMessageBox();
+                        screen.refresh();
+                    } else {
+                        List<String> allLines = beforeLines;
+                        allLines.add(typingMsg[0] + typingMsg[1]);
+                        allLines.addAll(afterLines);
+                        String fullMsg = String.join(" ", allLines);
+                        MessageManager.getInstance().sendMessage(fullMsg, contactMap.get(contacts.get(selectedContact)));
+                        beforeLines.clear();
+                        afterLines.clear();
+                        typingMsg = new String[]{"", ""};
+                        writingCursor = new int[]{WIDTH / 3 + 3, HEIGHT - 2};
+                        updateCursor();
+                        createPage();
+                        break;
+                    }
                 } else if (key.getKeyType() == KeyType.Tab) {
                     selected = cursorSel.CONTACT;
                     screen.setCursorPosition(null);
@@ -353,22 +353,55 @@ public class Chat {
     private void updateCursor(){
         screen.setCursorPosition(new TerminalPosition(writingCursor[0], writingCursor[1]));
     }
+    private void reformatMessageBox() throws IOException {
+        int[] cursorLoc = writingCursor.clone();
+        String allBeforeLines = String.join("", beforeLines);
+        allBeforeLines += typingMsg[0];
+        beforeLines.clear();
+        beforeLines.addAll(getLines(WIDTH/2, allBeforeLines));
+        typingMsg[0] = beforeLines.getLast();
+        beforeLines.removeLast();
+
+        int offset = typingMsg[0].length();
+
+        String allAfterLines = typingMsg[1];
+        allAfterLines += String.join(" ", afterLines);
+        afterLines.clear();
+        afterLines.addAll(getLines(offset, WIDTH/2, allAfterLines));
+        typingMsg[1] = afterLines.getFirst();
+        afterLines.removeFirst();
+
+        createPage(beforeLines.size()+afterLines.size());
+        for(String line : beforeLines)
+            Main.drawTextLeft(writingCursor[0], writingCursor[1]-afterLines.size()-(beforeLines.size()-beforeLines.indexOf(line)), line);
+        for(String line : afterLines)
+            Main.drawTextLeft(writingCursor[0], writingCursor[1]-afterLines.indexOf(line), line);
+
+        //writingCursor = cursorLoc.clone();
+        Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[1]);
+
+        updateCursor();
+    }
 
     private static List<String> getLines(int maxLength, String message) {
+        return getLines(0, maxLength, message);
+    }
+    private static List<String> getLines(int offset, int maxLength, String message) {
         List<String> messageLines = new ArrayList<>();
         List<String> messageWords = List.of(message.split(" "));
 
         String currentLine = "";
         for(String word : messageWords){
-            if(word.length() + currentLine.length() <= maxLength && !word.contains("\\n"))
+            if(word.length() + currentLine.length() + offset <= maxLength && !word.contains("⏎"))
                 currentLine += word+" ";
             else {
                 messageLines.add(currentLine);
-                if(word.contains("\\n")) continue;
-                currentLine = word+" ";
+                if(word.contains("⏎")) currentLine = "";
+                else currentLine = word+" ";
             }
+            offset = 0;
         }
-        if(!messageLines.contains(currentLine)) messageLines.add(currentLine);
+        if(!messageLines.contains(currentLine.trim())) messageLines.add(currentLine.trim());
         return messageLines;
     }
 
