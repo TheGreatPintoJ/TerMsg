@@ -354,7 +354,6 @@ public class Chat {
         screen.setCursorPosition(new TerminalPosition(writingCursor[0], writingCursor[1]));
     }
     private void reformatMessageBox() throws IOException {
-        int[] cursorLoc = writingCursor.clone();
         String allBeforeLines = String.join("", beforeLines);
         allBeforeLines += typingMsg[0];
         beforeLines.clear();
@@ -377,8 +376,8 @@ public class Chat {
         for(String line : afterLines)
             Main.drawTextLeft(writingCursor[0], writingCursor[1]-afterLines.indexOf(line), line);
 
-        //writingCursor = cursorLoc.clone();
-        Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[1]);
+        Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[0]);
+        writingCursor[0] = WIDTH/3+3+typingMsg[0].length();
 
         updateCursor();
     }
