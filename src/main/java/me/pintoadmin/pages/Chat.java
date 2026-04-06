@@ -317,11 +317,17 @@ public class Chat {
                 switch (key.getKeyType()) {
                     case KeyType.ArrowDown:
                         if (selectedContact < contacts.size() - 1) selectedContact++;
+                        beforeLines.clear();
+                        afterLines.clear();
+                        typingMsg = new String[]{"", ""};
                         createPage();
                         break mainLoop;
                     case KeyType.ArrowUp:
                         if (selectedContact > 0) selectedContact--;
                         else selected = cursorSel.NEWMSG;
+                        beforeLines.clear();
+                        afterLines.clear();
+                        typingMsg = new String[]{"", ""};
                         createPage();
                         break mainLoop;
                     case KeyType.ArrowRight, KeyType.Tab:
