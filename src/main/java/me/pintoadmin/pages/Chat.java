@@ -280,7 +280,8 @@ public class Chat {
                         beforeLines.add(typingMsg[0]);
                         typingMsg[0] = "";
 
-                        writingCursor = new int[]{WIDTH / 3 + 3, HEIGHT - 2};
+                        //writingCursor[0] = WIDTH / 3 + 3;
+                        //writingCursor[1]++;
                         reformatMessageBox();
                         screen.refresh();
                     } else {
@@ -378,6 +379,8 @@ public class Chat {
 
         Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[0]);
         writingCursor[0] = WIDTH/3+3+typingMsg[0].length();
+        writingCursor[1] -= afterLines.size();
+        Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[1]);
 
         updateCursor();
     }
@@ -394,8 +397,9 @@ public class Chat {
             if(word.length() + currentLine.length() + offset <= maxLength && !word.contains("⏎"))
                 currentLine += word+" ";
             else {
+                if(word.contains("⏎")) currentLine += word.substring(0, word.indexOf("⏎")+1);
                 messageLines.add(currentLine);
-                if(word.contains("⏎")) currentLine = "";
+                if(word.contains("⏎")) currentLine = word.substring(word.indexOf("⏎")+1)+" ";
                 else currentLine = word+" ";
             }
             offset = 0;
