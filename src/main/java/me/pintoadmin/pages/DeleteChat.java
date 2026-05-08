@@ -34,13 +34,13 @@ public class DeleteChat {
         Main.drawText(WIDTH/2, (HEIGHT/2)-3, "DELETE \""+host+"\"?");
 
         if(!yesSelected){
-            g.setForegroundColor(Main.BLACK);
-            g.setBackgroundColor(Main.GREEN);
+            g.setForegroundColor(Main.BACKGROUNDCOLOR);
+            g.setBackgroundColor(Main.TEXTCOLOR);
         }
         Main.drawTextRight(WIDTH/2-3, HEIGHT/2, "  NO ");
         if(yesSelected){
-            g.setForegroundColor(Main.BLACK);
-            g.setBackgroundColor(Main.GREEN);
+            g.setForegroundColor(Main.BACKGROUNDCOLOR);
+            g.setBackgroundColor(Main.TEXTCOLOR);
         } else Main.resetColors(g);
         Main.drawTextLeft(WIDTH/2+3, HEIGHT/2, " YES ");
 
