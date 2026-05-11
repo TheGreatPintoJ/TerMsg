@@ -42,6 +42,8 @@ public class Chat {
     private final List<String> beforeLines = new ArrayList<>();
     private final List<String> afterLines = new ArrayList<>();
 
+    private final int unreadDimFactor = 75;
+
     //↕
 
     private void createPage() throws IOException {
@@ -51,8 +53,8 @@ public class Chat {
     private void createPage(int offset) throws IOException {
         screen.clear();
 
-        g.setForegroundColor(Main.GREEN);
-        g.setBackgroundColor(Main.BLACK);
+        g.setForegroundColor(Main.TEXTCOLOR);
+        g.setBackgroundColor(Main.BACKGROUNDCOLOR);
         g.fill(' '); // Reset Screen
 
         contacts.clear(); // Clear contacts
@@ -60,6 +62,7 @@ public class Chat {
         File[] files = new File(Main.getDataDir()).listFiles();
         if(files != null) {
             for (File file : files) {
+                if(file.getName().equals(".config.yml")) continue;
                 if (file.isFile()) {
                     String host = file.getName();
                     String name = MessageManager.getInstance().getName(host);
@@ -73,15 +76,15 @@ public class Chat {
         for(String entry : contacts){
             if(contacts.indexOf(entry) == selectedContact && selected != cursorSel.NEWMSG){
                 g.setForegroundColor(Main.TRUE_BLACK);
-                g.setBackgroundColor(Main.GREEN);
+                g.setBackgroundColor(Main.TEXTCOLOR);
             } else {
-                g.setForegroundColor(Main.GREEN);
-                g.setBackgroundColor(Main.BLACK);
+                g.setForegroundColor(Main.TEXTCOLOR);
+                g.setBackgroundColor(Main.BACKGROUNDCOLOR);
             }
             Main.drawTextLeft(3, idx*2-1, entry);
 
-            g.setForegroundColor(Main.GREEN);
-            g.setBackgroundColor(Main.BLACK);
+            g.setForegroundColor(Main.TEXTCOLOR);
+            g.setBackgroundColor(Main.BACKGROUNDCOLOR);
             g.drawLine(1, idx*2, WIDTH/3-1, idx*2, Main.HORIZONTAL);
             idx++;
         }
@@ -108,7 +111,10 @@ public class Chat {
                 boolean read = msg.getBoolean("read");
 
                 if(!read){
-                    TextColor color = new TextColor.RGB(0, 150, 0);
+                    int newRed = Main.TEXTCOLOR.getRed() - unreadDimFactor;
+                    int newGreen = Main.TEXTCOLOR.getGreen() - unreadDimFactor;
+                    int newBlue = Main.TEXTCOLOR.getBlue() - unreadDimFactor;
+                    TextColor color = new TextColor.RGB(Math.max(newRed, 0), Math.max(newGreen, 0), Math.max(newBlue, 0));
                     g.setForegroundColor(color);
                 }
 
@@ -139,7 +145,7 @@ public class Chat {
                 }
 
                 if(!read){
-                    TextColor color = new TextColor.RGB(0, 200, 0);
+                    TextColor color = Main.TEXTCOLOR;
                     g.setForegroundColor(color);
                 }
                 yLevel -= 2+messageLines.size();
@@ -161,13 +167,13 @@ public class Chat {
         g.drawLine(WIDTH/3+2, HEIGHT-3-offset, WIDTH-2, HEIGHT-3-offset, '=');
 
         if(selected == cursorSel.NEWMSG){
-            g.setForegroundColor(Main.BLACK);
-            g.setBackgroundColor(Main.GREEN);
+            g.setForegroundColor(Main.BACKGROUNDCOLOR);
+            g.setBackgroundColor(Main.TEXTCOLOR);
         }
         g.putString(WIDTH/3-2, 1, "＋", SGR.BOLD);
         if(selected == cursorSel.NEWMSG){
-            g.setForegroundColor(Main.GREEN);
-            g.setBackgroundColor(Main.BLACK);
+            g.setForegroundColor(Main.TEXTCOLOR);
+            g.setBackgroundColor(Main.BACKGROUNDCOLOR);
         }
         screen.refresh();
     }

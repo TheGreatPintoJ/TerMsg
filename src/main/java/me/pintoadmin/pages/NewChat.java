@@ -52,8 +52,8 @@ public class NewChat {
         screen.clear();
         screen.setCursorPosition(null);
 
-        g.setForegroundColor(Main.GREEN);
-        g.setBackgroundColor(Main.BLACK);
+        g.setForegroundColor(Main.TEXTCOLOR);
+        g.setBackgroundColor(Main.BACKGROUNDCOLOR);
         g.fill(' '); // Reset Screen
 
         Main.drawBox(1, 0, WIDTH-1, HEIGHT-1);
@@ -64,8 +64,8 @@ public class NewChat {
     }
     private void updateInputs() throws IOException {
         screen.setCursorPosition(new TerminalPosition(cursorPos[0], cursorPos[1]));
-        g.setForegroundColor(Main.GREEN);
-        g.setBackgroundColor(Main.BLACK);
+        g.setForegroundColor(Main.TEXTCOLOR);
+        g.setBackgroundColor(Main.BACKGROUNDCOLOR);
 
         int leftBoxEdge = 11;
         int leftTextEdge = 3;
@@ -109,8 +109,8 @@ public class NewChat {
         currentY += boxYGap;
         if(selectedBox == boxes.SAVE){
             screen.setCursorPosition(null);
-            g.setForegroundColor(Main.BLACK);
-            g.setBackgroundColor(Main.GREEN);
+            g.setForegroundColor(Main.BACKGROUNDCOLOR);
+            g.setBackgroundColor(Main.TEXTCOLOR);
         } else screen.setCursorPosition(new TerminalPosition(cursorPos[0], cursorPos[1]));
         Main.drawText(WIDTH/2, currentY, " SAVE ");
 

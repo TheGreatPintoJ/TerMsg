@@ -16,6 +16,7 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'com.googlecode.lanterna:lanterna:3.1.2'
     implementation 'org.json:json:20140107'
+    implementation 'org.yaml:snakeyaml:2.2'
 }
 
 test {

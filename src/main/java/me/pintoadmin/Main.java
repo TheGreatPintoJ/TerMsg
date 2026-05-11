@@ -5,6 +5,7 @@ import com.googlecode.lanterna.graphics.*;
 import com.googlecode.lanterna.screen.*;
 import com.googlecode.lanterna.terminal.*;
 import me.pintoadmin.pages.*;
+import org.w3c.dom.*;
 
 import java.io.*;
 
@@ -12,6 +13,9 @@ public class Main {
     public static TextColor BLACK = new TextColor.RGB(0, 0, 0);
     public static TextColor TRUE_BLACK = new TextColor.RGB(0, 0, 0);
     public static TextColor GREEN = new TextColor.RGB(0, 200, 0);
+
+    public static TextColor TEXTCOLOR = GREEN;
+    public static TextColor BACKGROUNDCOLOR = BLACK;
 
     public static char HORIZONTAL = '─';
     public static char VERTICAL = '│';
@@ -23,6 +27,8 @@ public class Main {
     public static Terminal terminal;
     public static Screen screen;
     public static TextGraphics g;
+
+    public static ConfigLoader configLoader = new ConfigLoader();
 
     private enum OSTYPES {
         WINDOWS,
@@ -47,7 +53,8 @@ public class Main {
 
             g = screen.newTextGraphics();
             BLACK = g.getBackgroundColor();
-            g.setForegroundColor(GREEN);
+            TEXTCOLOR = TextColor.ANSI.valueOf(configLoader.getTextColor().toUpperCase());
+            g.setForegroundColor(TEXTCOLOR);
 
             screen.setCursorPosition(null);
 
@@ -113,8 +120,14 @@ public class Main {
         }
     }
     public static void resetColors(TextGraphics g){
-        g.setBackgroundColor(Main.BLACK);
-        g.setForegroundColor(Main.GREEN);
+        g.setBackgroundColor(BACKGROUNDCOLOR);
+        g.setForegroundColor(TEXTCOLOR);
+    }
+    public static void setTextColor(TextColor color){
+        TEXTCOLOR = color;
+    }
+    public static void setBackgroundColor(TextColor color){
+        BACKGROUNDCOLOR = color;
     }
 
     private static OSTYPES getOS(){

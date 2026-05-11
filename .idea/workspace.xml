@@ -9,17 +9,38 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ac22ef90-7ef0-4fb9-ac1b-4280adfc7298" name="Changes" comment="More editing and proper renaming host">
-      <change afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/DeleteChat.java" afterDir="false" />
+    <list default="true" id="ac22ef90-7ef0-4fb9-ac1b-4280adfc7298" name="Changes" comment="Partial multiline message supp">
+      <change afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/ConfigLoader.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/pintoadmin/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/pintoadmin/MessageManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/MessageManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/Chat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/Chat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/DeleteChat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/DeleteChat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/NewChat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/NewChat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/Settings.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CopilotChats">
+    <option name="panelChat">
+      <chat>
+        <option name="activeSessionId" value="e1e5fca5-77b1-4408-b9e9-7e861ae08871" />
+        <option name="sessions">
+          <session>
+            <option name="chatType" value="PANEL" />
+            <option name="id" value="e1e5fca5-77b1-4408-b9e9-7e861ae08871" />
+            <option name="modeId" value="Ask" />
+            <option name="modelType" value="builtin_family" />
+            <option name="modelValue" value="auto" />
+            <option name="targetType" value="LOCAL" />
+          </session>
+        </option>
+        <option name="type" value="PANEL" />
+      </chat>
+    </option>
   </component>
   <component name="CopilotPersistence">
     <persistenceIdMap>
@@ -101,7 +122,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/TheGreatPintoJ/TerMsg.git&quot;,
-    &quot;accountId&quot;: &quot;0da88654-8d17-4a11-8ce9-1dc58c8eb90a&quot;
+    &quot;accountId&quot;: &quot;ade41c6b-b32e-4fda-81ee-d75276916561&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -118,13 +139,17 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Downloaded.Files.Path.Enabled": "false",
     "Gradle.Build TerMsg.executor": "Run",
     "Gradle.Download Sources.executor": "Run",
-    "Gradle.TerMsg [build].executor": "Run",
+    "Gradle.TerMsg [build].executor": "Debug",
     "Gradle.TerMsg [clean build].executor": "Run",
     "JAR Application.Build & Run.executor": "Debug",
     "JAR Application.Run.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -149,7 +174,7 @@
       <command value="gradle clean build" />
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.TerMsg [build]">
+  <component name="RunManager" selected="JAR Application.Build &amp; Run">
     <configuration name="TerMsg [build]" type="GradleRunConfiguration" factoryName="Gradle" activateToolWindowBeforeRun="false" show_console_on_std_err="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -168,11 +193,8 @@
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
       <DebugAllEnabled>false</DebugAllEnabled>
       <RunAsTest>false</RunAsTest>
-      <GradleProfilingDisabled>false</GradleProfilingDisabled>
-      <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
     <configuration name="TerMsg [clean build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
@@ -194,11 +216,8 @@
       </ExternalSystemSettings>
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <ExternalSystemDebugDisabled>false</ExternalSystemDebugDisabled>
       <DebugAllEnabled>false</DebugAllEnabled>
       <RunAsTest>false</RunAsTest>
-      <GradleProfilingDisabled>false</GradleProfilingDisabled>
-      <GradleCoverageDisabled>false</GradleCoverageDisabled>
       <method v="2" />
     </configuration>
     <configuration name="Build &amp; Run" type="JarApplication">
@@ -232,13 +251,6 @@
         <item itemvalue="Gradle.TerMsg [clean build]" />
       </list>
     </recent_temporary>
-  </component>
-  <component name="SharedIndexes">
-    <attachedChunks>
-      <set>
-        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
-      </set>
-    </attachedChunks>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -312,8 +324,51 @@
       <option name="project" value="LOCAL" />
       <updated>1774493874828</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Data directory fix">
+      <option name="closed" value="true" />
+      <created>1774562917796</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1774562917796</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Warnings fixes">
+      <option name="closed" value="true" />
+      <created>1774563668136</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1774563668136</updated>
+    </task>
+    <task id="LOCAL-00011" summary="More warnings fixes">
+      <option name="closed" value="true" />
+      <created>1774568454245</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1774568454245</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Partial multiline message supp">
+      <option name="closed" value="true" />
+      <created>1774570304216</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1774570304216</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Sidebar base" />
@@ -324,20 +379,24 @@
     <MESSAGE value="Interactions and msgbox input" />
     <MESSAGE value="Newchat stuff and editing typed message" />
     <MESSAGE value="More editing and proper renaming host" />
-    <option name="LAST_COMMIT_MESSAGE" value="More editing and proper renaming host" />
+    <MESSAGE value="Data directory fix" />
+    <MESSAGE value="Warnings fixes" />
+    <MESSAGE value="More warnings fixes" />
+    <MESSAGE value="Partial multiline message supp" />
+    <option name="LAST_COMMIT_MESSAGE" value="Partial multiline message supp" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/Chat.java</url>
-          <line>85</line>
+          <line>112</line>
           <option name="timeStamp" value="10" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/me/pintoadmin/pages/Chat.java</url>
-          <line>101</line>
-          <option name="timeStamp" value="11" />
+          <url>file://$PROJECT_DIR$/src/main/java/me/pintoadmin/Main.java</url>
+          <line>55</line>
+          <option name="timeStamp" value="16" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
