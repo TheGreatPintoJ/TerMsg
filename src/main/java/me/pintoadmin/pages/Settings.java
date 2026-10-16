@@ -51,7 +51,7 @@ public class Settings {
         int idx = 1;
         for(String entry : menuEntries){
             if(idx-1 == selectedEntry){
-                g.setForegroundColor(Main.TRUE_BLACK);
+                g.setForegroundColor(Main.BLACK);
                 g.setBackgroundColor(Main.TEXTCOLOR);
             } else {
                 g.setForegroundColor(Main.TEXTCOLOR);

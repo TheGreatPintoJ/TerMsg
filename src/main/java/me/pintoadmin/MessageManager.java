@@ -61,7 +61,7 @@ public class MessageManager {
         }
     }
 
-    public void newChat(String host, String port, String name) {
+    public boolean newChat(String host, String port, String name) {
         String dataDir = Main.getDataDir();
         File chatFile = new File(dataDir + host);
 
@@ -77,7 +77,7 @@ public class MessageManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        return false;
     }
     public void editChat(String oldHost, String host, String port, String name) {
         String dataDir = Main.getDataDir();

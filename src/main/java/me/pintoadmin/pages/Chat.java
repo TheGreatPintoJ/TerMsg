@@ -18,11 +18,14 @@ public class Chat {
     private final TextGraphics g;
     private final int WIDTH;
     private final int HEIGHT;
+    private int sidebarWidth;
+    private int messagesBoxOffset = 0;
     public Chat() throws IOException {
         this.screen = Main.screen;
         this.g = Main.g;
         WIDTH = g.getSize().getColumns();
         HEIGHT = g.getSize().getRows();
+        sidebarWidth = 40;
         createPage();
     }
 
@@ -75,31 +78,31 @@ public class Chat {
         int idx = 2;
         for(String entry : contacts){
             if(contacts.indexOf(entry) == selectedContact && selected != cursorSel.NEWMSG){
-                g.setForegroundColor(Main.TRUE_BLACK);
+                g.setForegroundColor(Main.BLACK);
                 g.setBackgroundColor(Main.TEXTCOLOR);
             } else {
                 g.setForegroundColor(Main.TEXTCOLOR);
                 g.setBackgroundColor(Main.BACKGROUNDCOLOR);
             }
-            Main.drawTextLeft(3, idx*2-1, entry);
+            Main.drawTextLeft(2, idx*2-1, entry);
 
             g.setForegroundColor(Main.TEXTCOLOR);
             g.setBackgroundColor(Main.BACKGROUNDCOLOR);
-            g.drawLine(1, idx*2, WIDTH/3-1, idx*2, Main.HORIZONTAL);
+            g.drawLine(1, idx*2, sidebarWidth-1, idx*2, Main.HORIZONTAL);
             idx++;
         }
 
-        updateMessages(offset);
+        updateMessages(messagesBoxOffset);
         screen.refresh();
     }
     private void updateMessages(int offset) throws IOException {
         // Message Loading
         MessageManager msgMan = MessageManager.getInstance();
-        int leftMsgX = WIDTH/3+2;
-        int rightMsgX = WIDTH-2;
+        int leftMsgX = sidebarWidth+2;
+        int rightMsgX = WIDTH-1;
         int yLevel = HEIGHT-5-offset;
         int maxHeight = 3;
-        writingCursor[0] = WIDTH/3+3;
+        writingCursor[0] = sidebarWidth+3;
         writingCursor[1] = HEIGHT-2;
 
         if(selectedContact != -1){
@@ -118,7 +121,7 @@ public class Chat {
                     g.setForegroundColor(color);
                 }
 
-                List<String> messageLines = getLines(WIDTH/2, message);
+                List<String> messageLines = getLines(WIDTH-sidebarWidth-20, message);
                 int longest = getLongest(messageLines);
                 if(received) {
                     Main.drawTextLeft(leftMsgX + 1, yLevel - messageLines.size(), getTopBubble(longest));
@@ -126,8 +129,8 @@ public class Chat {
                     for(String line : messageLines) {
                         int endSpace = longest-line.length();
                         if(line.equals(messageLines.getLast()))
-                            Main.drawTextLeft(leftMsgX, yLevel, "<╡ " + line +whitespace(endSpace)+"│");
-                        else Main.drawTextLeft(leftMsgX+1, yLevel-index, "│ " + line +whitespace(endSpace)+"│");
+                            Main.drawTextLeft(leftMsgX, yLevel, "<╡ " + line +whitespace(endSpace)+" │");
+                        else Main.drawTextLeft(leftMsgX+1, yLevel-index, "│ " + line +whitespace(endSpace)+" │");
                         index--;
                     }
                     Main.drawTextLeft(leftMsgX + 1, yLevel + 1, getBottomBubble(longest));
@@ -137,8 +140,8 @@ public class Chat {
                     for(String line : messageLines) {
                         int endSpace = longest-line.length();
                         if(line.equals(messageLines.getLast()))
-                            Main.drawTextRight(rightMsgX, yLevel, "│ " + line +whitespace(endSpace)+"╞>");
-                        else Main.drawTextRight(rightMsgX-1, yLevel-index, "│ " + line +whitespace(endSpace)+"│");
+                            Main.drawTextRight(rightMsgX, yLevel, "│ " + line +whitespace(endSpace)+" ╞>");
+                        else Main.drawTextRight(rightMsgX-1, yLevel-index, "│ " + line +whitespace(endSpace)+" │");
                         index--;
                     }
                     Main.drawTextRight(rightMsgX - 1, yLevel + 1, getBottomBubble(longest));
@@ -154,23 +157,23 @@ public class Chat {
             }
             Main.drawTextLeft(0,0, whitespace(WIDTH));
             Main.drawTextLeft(0,1, whitespace(WIDTH));
-            Main.drawText(2*WIDTH/3, 1, contacts.get(selectedContact));
+            Main.drawText(sidebarWidth+WIDTH/2, 1, contacts.get(selectedContact));
         }
 
         // Update page
-        Main.drawBox(0,0, WIDTH/3, HEIGHT-1);
-        Main.drawBox(WIDTH/3+1, 2, WIDTH-1, HEIGHT-1);
+        Main.drawBox(0,0, sidebarWidth, HEIGHT-1);
+        Main.drawBox(sidebarWidth+1, 2, WIDTH-1, HEIGHT-1);
 
-        Main.drawText(WIDTH/6, 1,  "CONTACTS");
-        g.drawLine(1, 2, WIDTH/3-1, 2, Main.HORIZONTAL);
+        Main.drawText(sidebarWidth/2, 1,  "CONTACTS");
+        g.drawLine(1, 2, sidebarWidth-1, 2, Main.HORIZONTAL);
 
-        g.drawLine(WIDTH/3+2, HEIGHT-3-offset, WIDTH-2, HEIGHT-3-offset, '=');
+        g.drawLine(sidebarWidth+2, HEIGHT-3-offset, WIDTH-2, HEIGHT-3-offset, '=');
 
         if(selected == cursorSel.NEWMSG){
             g.setForegroundColor(Main.BACKGROUNDCOLOR);
             g.setBackgroundColor(Main.TEXTCOLOR);
         }
-        g.putString(WIDTH/3-2, 1, "＋", SGR.BOLD);
+        g.putString(sidebarWidth-2, 1, "＋", SGR.BOLD);
         if(selected == cursorSel.NEWMSG){
             g.setForegroundColor(Main.TEXTCOLOR);
             g.setBackgroundColor(Main.BACKGROUNDCOLOR);
@@ -337,11 +340,24 @@ public class Chat {
                         createPage();
                         break mainLoop;
                     case KeyType.ArrowRight, KeyType.Tab:
-                        if(selectedContact == -1) break;
-                        selected = cursorSel.MSGBOX;
-                        updateCursor();
-                        updateMessages(0);
-                        screen.refresh();
+                        if(key.isAltDown() && key.getKeyType() == KeyType.ArrowRight){
+                            if(sidebarWidth >= WIDTH/2) break;
+                            sidebarWidth++;
+                            createPage();
+                        } else {
+                            if (selectedContact == -1) break;
+                            selected = cursorSel.MSGBOX;
+                            updateCursor();
+                            updateMessages(0);
+                            screen.refresh();
+                        }
+                        break;
+                    case KeyType.ArrowLeft:
+                        if(key.isAltDown()){
+                            if(sidebarWidth <= 3+getLongest(contacts)) break;
+                            sidebarWidth--;
+                            createPage();
+                        }
                         break;
                     case KeyType.Character:
                         if (key.getCharacter() == 'q') {
@@ -440,14 +456,14 @@ public class Chat {
 
     private String getTopBubble(int width){
         String topBubbleLine = "╭─";
-        for (int j = 0; j < width; j++)
+        for (int j = 0; j < width+1; j++)
             topBubbleLine += "─";
         topBubbleLine += "╮";
         return topBubbleLine;
     }
     private String getBottomBubble(int width){
         String topBubbleLine = "╰─";
-        for (int j = 0; j < width; j++)
+        for (int j = 0; j < width+1; j++)
             topBubbleLine += "─";
         topBubbleLine += "╯";
         return topBubbleLine;

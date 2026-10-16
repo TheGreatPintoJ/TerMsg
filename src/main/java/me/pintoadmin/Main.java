@@ -10,12 +10,11 @@ import org.w3c.dom.*;
 import java.io.*;
 
 public class Main {
-    public static TextColor BLACK = new TextColor.RGB(0, 0, 0);
-    public static TextColor TRUE_BLACK = new TextColor.RGB(0, 0, 0);
+    public static TextColor BLACK = new TextColor.RGB(0,0,0);
     public static TextColor GREEN = new TextColor.RGB(0, 200, 0);
 
     public static TextColor TEXTCOLOR = GREEN;
-    public static TextColor BACKGROUNDCOLOR = BLACK;
+    public static TextColor BACKGROUNDCOLOR = null;
 
     public static char HORIZONTAL = '─';
     public static char VERTICAL = '│';

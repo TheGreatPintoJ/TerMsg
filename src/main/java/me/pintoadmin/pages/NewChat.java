@@ -139,9 +139,11 @@ public class NewChat {
                 String fullPort = port[0]+port[1];
                 String fullName = name[0]+name[1];
 
-                if(editMode)
+                if(editMode) {
                     messageManager.editChat(oldHost, fullHost, fullPort, fullName);
-                else messageManager.newChat(fullHost, fullPort, fullName);
+                } else {
+                    messageManager.newChat(fullHost, fullPort, fullName);
+                }
                 break;
             } else {
                 String[] typingMsg =
