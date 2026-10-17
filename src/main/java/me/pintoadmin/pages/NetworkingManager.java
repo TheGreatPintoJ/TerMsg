@@ -4,13 +4,25 @@ import me.pintoadmin.MessageManager;
 
 import java.io.IOException;
 import java.net.*;
-import java.nio.Buffer;
 
 public class NetworkingManager {
+    private static volatile NetworkingManager instance;
     public static int PORT = 51337;
     private final int BUFSIZE = 1024;
-    public NetworkingManager(){
+    private NetworkingManager(){
+        PORT = ConfigLoader.getInstance().getPort();
         init();
+    }
+
+    public static NetworkingManager getInstance(){
+        if (instance == null) { // First check (no logging/locking overhead)
+            synchronized (NetworkingManager.class) {
+                if (instance == null) { // Second check (inside synchronization)
+                    instance = new NetworkingManager();
+                }
+            }
+        }
+        return instance;
     }
 
     private Thread socketThread;

@@ -26,8 +26,8 @@ public class Main {
     public static Screen screen;
     public static TextGraphics g;
 
-    public static ConfigLoader configLoader = new ConfigLoader();
-    public static NetworkingManager netManager = new NetworkingManager();
+    public static ConfigLoader configLoader = ConfigLoader.getInstance();
+    public static NetworkingManager netManager = NetworkingManager.getInstance();
 
     private enum OSTYPES {
         WINDOWS,
