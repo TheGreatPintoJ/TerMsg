@@ -59,11 +59,9 @@ public class Main {
 
             new Chat();
         } catch (IOException e) {
-            netManager.deinit();
             throw new RuntimeException(e);
-        } catch (RuntimeException ignored) {
-            netManager.deinit();
-        }
+        } catch (RuntimeException ignored) {}
+        netManager.deinit();
     }
 
     public static void drawBox(int startX, int startY, int endX, int endY){

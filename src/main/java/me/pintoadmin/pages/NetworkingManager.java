@@ -21,20 +21,21 @@ public class NetworkingManager {
             try {
                 socket = new DatagramSocket(PORT);
                 byte[] buf = new byte[BUFSIZE];
-                while (!Thread.currentThread().isInterrupted()){
+                while (!Thread.currentThread().isInterrupted()) {
                     DatagramPacket packet = new DatagramPacket(buf, buf.length);
                     socket.receive(packet);
 
                     String msg = new String(packet.getData(), 0, packet.getLength());
                     InetSocketAddress addr = new InetSocketAddress(packet.getAddress(), packet.getPort());
 
-                    if(MessageManager.getInstance().newChat(addr.getHostName(), String.valueOf(PORT), addr.getHostString())){
+                    if (MessageManager.getInstance().newChat(addr.getHostName(), String.valueOf(PORT), addr.getHostString())) {
                         MessageManager.getInstance().recieveMessage(msg, addr.getHostName());
                     }
                     buf = new byte[BUFSIZE];
                 }
             } catch (BindException ignored){
                 throw new RuntimeException("There's another instance running!");
+            } catch (SocketException ignored) {
             }  catch (IOException e){
                 throw new RuntimeException(e);
             }
