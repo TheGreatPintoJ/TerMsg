@@ -31,7 +31,9 @@ public class Settings {
     private int selectedColorEntry = -1;
     private boolean textColorSelected = true;
 
-    private final List<String> menuEntries = List.of("Color", "Quit");
+    private boolean portSaveSelected = true;
+
+    private final List<String> menuEntries = List.of("Color", "Port", "Quit");
     private int selectedEntry = 0;
     private TerminalPosition oldPos;
 
@@ -85,21 +87,6 @@ public class Settings {
         }
 
         Main.resetColors(g);
-//        index++;
-//        Main.drawText((WIDTH/2)-1, (HEIGHT/3)+index, "BACKGROUND COLOR");
-//        index+=2;
-//        for(Map.Entry<String, TextColor> colorEntry : colorOptions.entrySet()){
-//            String name = colorEntry.getKey();
-//            TextColor color = colorEntry.getValue();
-//
-//            g.setForegroundColor(Main.BACKGROUNDCOLOR);
-//            g.setBackgroundColor(color);
-//            Main.drawText((WIDTH/2)-1, (HEIGHT/3)+index, name);
-//
-//            index++;
-//        }
-        //Main.drawText((WIDTH/2)-1, (HEIGHT/3)+index, "Black/Reset");
-//        Main.resetColors(g);
 
         if(selectedColorEntry != -1)
             g.setCharacter((WIDTH/2)-5,
@@ -148,6 +135,67 @@ public class Settings {
         }
     }
 
+    private void portSelect() throws IOException {
+        int WIDTH = g.getSize().getColumns();
+        int HEIGHT = g.getSize().getRows();
+
+        screen.clear();
+
+        Main.drawText((WIDTH/2)-1, (HEIGHT/3)-1, "LISTENING PORT");
+        Main.drawBox(WIDTH/4, HEIGHT/4, WIDTH*3/4, HEIGHT*3/4);
+        Main.drawBox(WIDTH/2-4, HEIGHT/4+5, WIDTH/2+3, HEIGHT/4+7);
+
+        Main.drawTextLeft(WIDTH/2-3, HEIGHT/4+6, String.valueOf(NetworkingManager.PORT));
+
+        if(portSaveSelected){
+            Main.setBackgroundColor(Main.TEXTCOLOR);
+            Main.setTextColor(Main.BLACK);
+        }
+        Main.drawText(WIDTH/2, HEIGHT/2+4,"SAVE");
+
+        Main.resetColors(g);
+
+        if(selectedColorEntry != -1)
+            g.setCharacter((WIDTH/2)-5,
+                    textColorSelected ? (HEIGHT/3)+selectedColorEntry+1
+                            : (HEIGHT/3)+selectedColorEntry+colorOptions.size()+4,
+                    '>');
+
+        screen.refresh();
+        handlePortInput();
+    }
+    private void handlePortInput() throws IOException {
+        mainLoop:
+        while (true){
+            KeyStroke key = screen.pollInput();
+            if(key == null) continue;
+            if(selectedColorEntry == -1) selectedColorEntry = 0;
+            switch (key.getKeyType()) {
+                case KeyType.ArrowDown:
+                    portSaveSelected = true;
+                    portSelect();
+                    break;
+                case KeyType.ArrowUp:
+                    portSaveSelected = false;
+                    portSelect();
+                    break;
+                case KeyType.Character:
+                    // Type port (if too long or not number then cancel)
+                    break mainLoop;
+                case KeyType.Enter:
+                    // save color selection
+                    String name = new ArrayList<>(colorOptions.keySet()).get(selectedColorEntry);
+                    TextColor color = new ArrayList<>(colorOptions.values()).get(selectedColorEntry);
+                    if(textColorSelected) Main.setTextColor(color);
+                    else Main.setBackgroundColor(name.equals("Black") ? color : TextColor.ANSI.BLACK);
+                    Main.configLoader.setTextColor(name);
+                    break mainLoop;
+                case KeyType.Escape:
+                    break mainLoop;
+            }
+        }
+    }
+
     private void handleInput() throws IOException {
         mainLoop:
         while(true) {
@@ -175,6 +223,9 @@ public class Settings {
                             createPage();
                             break mainLoop;
                         case 1:
+                            portSelect();
+                            break mainLoop;
+                        case 2:
                             screen.close();
                             throw new RuntimeException("quit");
                     }

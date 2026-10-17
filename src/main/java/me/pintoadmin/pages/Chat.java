@@ -157,7 +157,7 @@ public class Chat {
             }
             Main.drawTextLeft(0,0, whitespace(WIDTH));
             Main.drawTextLeft(0,1, whitespace(WIDTH));
-            Main.drawText(sidebarWidth+WIDTH/2, 1, contacts.get(selectedContact));
+            Main.drawText((sidebarWidth+WIDTH)/2, 1, contacts.get(selectedContact));
         }
 
         // Update page
@@ -302,7 +302,7 @@ public class Chat {
                         beforeLines.clear();
                         afterLines.clear();
                         typingMsg = new String[]{"", ""};
-                        writingCursor = new int[]{WIDTH / 3 + 3, HEIGHT - 2};
+                        writingCursor = new int[]{sidebarWidth + 3, HEIGHT - 2};
                         updateCursor();
                         createPage();
                         break;

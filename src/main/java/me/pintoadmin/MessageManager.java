@@ -16,6 +16,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static me.pintoadmin.Main.netManager;
+
 public class MessageManager {
     private static volatile MessageManager INSTANCE; // volatile ensures visibility across threads
     private MessageManager() {}
@@ -42,6 +44,37 @@ public class MessageManager {
         obj.put("message", message);
         obj.put("timestamp", LocalDateTime.now().format(dateTimeFormatter));
         obj.put("received", false);
+        obj.put("read", false);
+
+        JSONArray arr = getMsgs(host);
+        arr.put(obj);
+
+        JSONObject mainObj = new JSONObject();
+        mainObj.put("name", getName(host));
+        mainObj.put("port", getPort(host));
+        mainObj.put("messages", arr);
+
+        netManager.sendMsgPacket(message, host, getPort(host));
+
+        // 2. Write the JSON string to a file
+        try (FileWriter file = new FileWriter(chatFile)) {
+            file.write(mainObj.toString(4)); //pretty-printing (indentation)
+            file.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void recieveMessage(String message, String host) throws IOException {
+        String dataDir = Main.getDataDir();
+        File chatFile = new File(dataDir + host);
+
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+
+        // 1. Create the JSON object
+        JSONObject obj = new JSONObject();
+        obj.put("message", message);
+        obj.put("timestamp", LocalDateTime.now().format(dateTimeFormatter));
+        obj.put("received", true);
         obj.put("read", false);
 
         JSONArray arr = getMsgs(host);

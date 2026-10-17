@@ -5,7 +5,6 @@ import com.googlecode.lanterna.graphics.*;
 import com.googlecode.lanterna.screen.*;
 import com.googlecode.lanterna.terminal.*;
 import me.pintoadmin.pages.*;
-import org.w3c.dom.*;
 
 import java.io.*;
 
@@ -28,6 +27,7 @@ public class Main {
     public static TextGraphics g;
 
     public static ConfigLoader configLoader = new ConfigLoader();
+    public static NetworkingManager netManager = new NetworkingManager();
 
     private enum OSTYPES {
         WINDOWS,
@@ -59,8 +59,11 @@ public class Main {
 
             new Chat();
         } catch (IOException e) {
+            netManager.deinit();
             throw new RuntimeException(e);
-        } catch (RuntimeException ignored){}
+        } catch (RuntimeException ignored) {
+            netManager.deinit();
+        }
     }
 
     public static void drawBox(int startX, int startY, int endX, int endY){
