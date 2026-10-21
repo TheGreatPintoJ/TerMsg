@@ -32,18 +32,18 @@ public class NetworkingManager {
         socketThread = new Thread(() -> {
             try {
                 socket = new DatagramSocket(PORT);
-                byte[] buf = new byte[BUFSIZE];
                 while (!Thread.currentThread().isInterrupted()) {
+                    byte[] buf = new byte[BUFSIZE];
                     DatagramPacket packet = new DatagramPacket(buf, buf.length);
+
                     socket.receive(packet);
 
-                    String msg = new String(packet.getData(), 0, packet.getLength());
+                    String msg = new String(packet.getData());
                     InetSocketAddress addr = new InetSocketAddress(packet.getAddress(), packet.getPort());
 
                     if (MessageManager.getInstance().newChat(addr.getHostName(), String.valueOf(PORT), addr.getHostString())) {
                         MessageManager.getInstance().recieveMessage(msg, addr.getHostName());
                     }
-                    buf = new byte[BUFSIZE];
                 }
             } catch (BindException ignored){
                 throw new RuntimeException("There's another instance running!");
@@ -68,7 +68,7 @@ public class NetworkingManager {
     public void sendMsgPacket(String message, String host, String port){
         try {
             InetSocketAddress addr = new InetSocketAddress(host, Integer.parseInt(port));
-            DatagramPacket packet = new DatagramPacket(message.getBytes(), 0, addr.getAddress(), addr.getPort());
+            DatagramPacket packet = new DatagramPacket(message.getBytes(), message.getBytes().length, addr.getAddress(), addr.getPort());
             socket.send(packet);
         } catch (IOException e){
             e.printStackTrace();

@@ -188,7 +188,7 @@ public class Settings {
                     break mainLoop;
                 case KeyType.Enter:
                     // save color selection
-                    ConfigLoader.getInstance().savePort();
+//                    ConfigLoader.getInstance().savePort();
                     NetworkingManager.getInstance().reload();
                     break mainLoop;
                 case KeyType.Escape:
