@@ -107,6 +107,7 @@ public class MessageManager {
         try (FileWriter file = new FileWriter(chatFile)) {
             file.write(obj.toString(4)); //pretty-printing (indentation)
             file.flush();
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
         }

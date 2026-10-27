@@ -140,26 +140,27 @@ public class Settings {
         int HEIGHT = g.getSize().getRows();
 
         screen.clear();
+        Main.resetColors(g);
 
         Main.drawText((WIDTH/2)-1, (HEIGHT/3)-1, "LISTENING PORT");
         Main.drawBox(WIDTH/4, HEIGHT/4, WIDTH*3/4, HEIGHT*3/4);
+
+        if(!portSaveSelected) {
+            g.setForegroundColor(Main.BACKGROUNDCOLOR);
+            g.setBackgroundColor(Main.TEXTCOLOR);
+        }
         Main.drawBox(WIDTH/2-4, HEIGHT/4+5, WIDTH/2+3, HEIGHT/4+7);
 
+        Main.resetColors(g);
         Main.drawTextLeft(WIDTH/2-3, HEIGHT/4+6, String.valueOf(NetworkingManager.PORT));
 
         if(portSaveSelected){
-            Main.setBackgroundColor(Main.TEXTCOLOR);
-            Main.setTextColor(Main.BLACK);
+            g.setForegroundColor(Main.BACKGROUNDCOLOR);
+            g.setBackgroundColor(Main.TEXTCOLOR);
         }
         Main.drawText(WIDTH/2, HEIGHT/2+4,"SAVE");
 
         Main.resetColors(g);
-
-        if(selectedColorEntry != -1)
-            g.setCharacter((WIDTH/2)-5,
-                    textColorSelected ? (HEIGHT/3)+selectedColorEntry+1
-                            : (HEIGHT/3)+selectedColorEntry+colorOptions.size()+4,
-                    '>');
 
         screen.refresh();
         handlePortInput();
@@ -171,24 +172,24 @@ public class Settings {
             if(key == null) continue;
             if(selectedColorEntry == -1) selectedColorEntry = 0;
             switch (key.getKeyType()) {
-                case KeyType.ArrowDown:
-                    portSaveSelected = true;
+                case KeyType.Tab, KeyType.ReverseTab:
+                    portSaveSelected = !portSaveSelected;
                     portSelect();
                     break;
                 case KeyType.ArrowUp:
-                    portSaveSelected = false;
+                    if(portSaveSelected) break;
+                    if(NetworkingManager.PORT <= 65535) NetworkingManager.PORT++;
                     portSelect();
-                    break;
-                case KeyType.Character:
-                    // Type port (if too long or not number then cancel)
+                    break mainLoop;
+                case KeyType.ArrowDown:
+                    if(portSaveSelected) break;
+                    if(NetworkingManager.PORT >= 1) NetworkingManager.PORT--;
+                    portSelect();
                     break mainLoop;
                 case KeyType.Enter:
                     // save color selection
-                    String name = new ArrayList<>(colorOptions.keySet()).get(selectedColorEntry);
-                    TextColor color = new ArrayList<>(colorOptions.values()).get(selectedColorEntry);
-                    if(textColorSelected) Main.setTextColor(color);
-                    else Main.setBackgroundColor(name.equals("Black") ? color : TextColor.ANSI.BLACK);
-                    Main.configLoader.setTextColor(name);
+//                    ConfigLoader.getInstance().savePort();
+                    NetworkingManager.getInstance().reload();
                     break mainLoop;
                 case KeyType.Escape:
                     break mainLoop;

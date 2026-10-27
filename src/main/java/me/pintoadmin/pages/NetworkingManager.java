@@ -4,13 +4,25 @@ import me.pintoadmin.MessageManager;
 
 import java.io.IOException;
 import java.net.*;
-import java.nio.Buffer;
 
 public class NetworkingManager {
+    private static volatile NetworkingManager instance;
     public static int PORT = 51337;
     private final int BUFSIZE = 1024;
-    public NetworkingManager(){
+    private NetworkingManager(){
+        PORT = ConfigLoader.getInstance().getPort();
         init();
+    }
+
+    public static NetworkingManager getInstance(){
+        if (instance == null) { // First check (no logging/locking overhead)
+            synchronized (NetworkingManager.class) {
+                if (instance == null) { // Second check (inside synchronization)
+                    instance = new NetworkingManager();
+                }
+            }
+        }
+        return instance;
     }
 
     private Thread socketThread;
@@ -20,21 +32,22 @@ public class NetworkingManager {
         socketThread = new Thread(() -> {
             try {
                 socket = new DatagramSocket(PORT);
-                byte[] buf = new byte[BUFSIZE];
-                while (!Thread.currentThread().isInterrupted()){
+                while (!Thread.currentThread().isInterrupted()) {
+                    byte[] buf = new byte[BUFSIZE];
                     DatagramPacket packet = new DatagramPacket(buf, buf.length);
+
                     socket.receive(packet);
 
-                    String msg = new String(packet.getData(), 0, packet.getLength());
+                    String msg = new String(packet.getData());
                     InetSocketAddress addr = new InetSocketAddress(packet.getAddress(), packet.getPort());
 
-                    if(MessageManager.getInstance().newChat(addr.getHostName(), String.valueOf(PORT), addr.getHostString())){
+                    if (MessageManager.getInstance().newChat(addr.getHostName(), String.valueOf(PORT), addr.getHostString())) {
                         MessageManager.getInstance().recieveMessage(msg, addr.getHostName());
                     }
-                    buf = new byte[BUFSIZE];
                 }
             } catch (BindException ignored){
                 throw new RuntimeException("There's another instance running!");
+            } catch (SocketException ignored) {
             }  catch (IOException e){
                 throw new RuntimeException(e);
             }
@@ -55,7 +68,7 @@ public class NetworkingManager {
     public void sendMsgPacket(String message, String host, String port){
         try {
             InetSocketAddress addr = new InetSocketAddress(host, Integer.parseInt(port));
-            DatagramPacket packet = new DatagramPacket(message.getBytes(), 0, addr.getAddress(), addr.getPort());
+            DatagramPacket packet = new DatagramPacket(message.getBytes(), message.getBytes().length, addr.getAddress(), addr.getPort());
             socket.send(packet);
         } catch (IOException e){
             e.printStackTrace();
