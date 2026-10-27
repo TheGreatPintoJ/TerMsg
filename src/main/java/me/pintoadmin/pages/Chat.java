@@ -93,7 +93,7 @@ public class Chat {
         }
 
         updateMessages(messagesBoxOffset);
-        screen.refresh();
+        screen.refresh(Screen.RefreshType.DELTA);
     }
     private void updateMessages(int offset) throws IOException {
         // Message Loading
@@ -153,7 +153,7 @@ public class Chat {
                 }
                 yLevel -= 2+messageLines.size();
                 if (yLevel <= maxHeight) break;
-                screen.refresh();
+                screen.refresh(Screen.RefreshType.DELTA);
             }
             Main.drawTextLeft(0,0, whitespace(WIDTH));
             Main.drawTextLeft(0,1, whitespace(WIDTH));
@@ -178,7 +178,7 @@ public class Chat {
             g.setForegroundColor(Main.TEXTCOLOR);
             g.setBackgroundColor(Main.BACKGROUNDCOLOR);
         }
-        screen.refresh();
+        screen.refresh(Screen.RefreshType.DELTA);
     }
 
     private void handleInput() throws IOException {
@@ -198,7 +198,7 @@ public class Chat {
 
                         writingCursor[0]--;
                         updateCursor();
-                        screen.refresh();
+                        screen.refresh(Screen.RefreshType.DELTA);
                     }
                 } else if (key.getKeyType() == KeyType.ArrowRight) {
                     if (!typingMsg[1].isEmpty()) {
@@ -207,7 +207,7 @@ public class Chat {
 
                         writingCursor[0]++;
                         updateCursor();
-                        screen.refresh();
+                        screen.refresh(Screen.RefreshType.DELTA);
                     }
                 } else if (key.getKeyType() == KeyType.ArrowUp){
                     if (!beforeLines.isEmpty()) {
@@ -221,7 +221,7 @@ public class Chat {
 
                         writingCursor[1]--;
                         updateCursor();
-                        screen.refresh();
+                        screen.refresh(Screen.RefreshType.DELTA);
                     }
                 } else if (key.getKeyType() == KeyType.ArrowDown){
                     if (!afterLines.isEmpty()) {
@@ -237,7 +237,7 @@ public class Chat {
 
                         writingCursor[1]++;
                         updateCursor();
-                        screen.refresh();
+                        screen.refresh(Screen.RefreshType.DELTA);
                     }
                 } else if (key.getKeyType() == KeyType.Character) {
                     if(writingCursor[0] < WIDTH-3
@@ -258,7 +258,7 @@ public class Chat {
 //                    typingMsg[0] += key.getCharacter();
 //                    reformatMessageBox();
                     updateCursor();
-                    screen.refresh();
+                    screen.refresh(Screen.RefreshType.DELTA);
                 } else if (key.getKeyType() == KeyType.Backspace) {
                     if (!typingMsg[0].isEmpty()) {
                         g.setCharacter(writingCursor[0] - 1, writingCursor[1], ' ');
@@ -279,10 +279,10 @@ public class Chat {
                             Main.drawTextLeft(writingCursor[0], writingCursor[1], typingMsg[0]);
                             writingCursor[0] = WIDTH/3+3+typingMsg[0].length();
                             updateCursor();
-                            screen.refresh();
+                            screen.refresh(Screen.RefreshType.DELTA);
                         }
                     }
-                    screen.refresh();
+                    screen.refresh(Screen.RefreshType.DELTA);
                 } else if (key.getKeyType() == KeyType.Enter) {
                     if (key.isShiftDown()) {
                         typingMsg[0] += "⏎";
@@ -292,7 +292,7 @@ public class Chat {
                         //writingCursor[0] = WIDTH / 3 + 3;
                         //writingCursor[1]++;
                         reformatMessageBox();
-                        screen.refresh();
+                        screen.refresh(Screen.RefreshType.DELTA);
                     } else {
                         List<String> allLines = beforeLines;
                         allLines.add(typingMsg[0] + typingMsg[1]);
@@ -310,7 +310,7 @@ public class Chat {
                 } else if (key.getKeyType() == KeyType.Tab) {
                     selected = cursorSel.CONTACT;
                     screen.setCursorPosition(null);
-                    screen.refresh();
+                    screen.refresh(Screen.RefreshType.DELTA);
                 }
             } else if(selected == cursorSel.NEWMSG){
                 if(key.getKeyType() == KeyType.ArrowDown){
@@ -349,7 +349,7 @@ public class Chat {
                             selected = cursorSel.MSGBOX;
                             updateCursor();
                             updateMessages(0);
-                            screen.refresh();
+                            screen.refresh(Screen.RefreshType.DELTA);
                         }
                         break;
                     case KeyType.ArrowLeft:
